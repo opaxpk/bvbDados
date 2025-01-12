@@ -9,25 +9,25 @@
     <style>
         body {
             display: flex;
+            flex-direction: column;
             font-family: Arial, sans-serif;
             margin: 0;
             padding: 0;
+            background-color: #f4f4f9;
         }
         .legenda {
-            width: 250px;
+            width: 100%;
             position: fixed;
-            height: 100vh;
+            bottom: 0;
             background-color: #f0f0f0;
-            padding: 20px;
-            box-shadow: 2px 0 5px rgba(0,0,0,0.1);
-        }
-        .legenda h3 {
-            margin-top: 0;
+            padding: 10px;
+            box-shadow: 0 -2px 5px rgba(0,0,0,0.1);
+            font-size: 12px;
+            text-align: center;
         }
         .conteudo {
-            margin-left: 270px;
+            margin-bottom: 60px;
             padding: 20px;
-            width: calc(100% - 270px);
         }
         table {
             width: 100%;
@@ -72,13 +72,6 @@
     </style>
 </head>
 <body>
-    <div class="legenda">
-        <h3>Legenda</h3>
-        <p><strong>QN</strong> - Quantidade Normal</p>
-        <p><strong>(*R)</strong> - Material Extra de Reposição</p>
-        <p><strong>LACRE</strong> - Equipamento lacrado após utilização. Após a reposição, deve ser lacrado novamente.</p>
-        <p><em>* Rodear a quantidade correspondente</em></p>
-    </div>
     <div class="conteudo">
         <h2>Cabine de Condução</h2>
         <table class="cinza">
@@ -151,31 +144,8 @@
             <button onclick="addItem()">Adicionar Item</button>
         </div>
     </div>
-    <script>
-        const firebaseConfig = {
-            apiKey: "AIzaSyCONI5jggdZmpWU6XyExDUILRwb6PZ3ww8",
-            authDomain: "bvbdados.firebaseapp.com",
-            databaseURL: "https://bvbdados-default-rtdb.europe-west1.firebasedatabase.app",
-            projectId: "bvbdados",
-            storageBucket: "bvbdados.appspot.com",
-            messagingSenderId: "1023617367181",
-            appId: "1:1023617367181:web:1278c64ceefb14e2ff76c4"
-        };
-        firebase.initializeApp(firebaseConfig);
-        const urlParams = new URLSearchParams(window.location.search);
-        const isAdmin = urlParams.get('admin') === 'true';
-        if (isAdmin) {
-            document.querySelectorAll('.acoes').forEach(el => el.style.display = 'table-cell');
-            document.querySelector('.admin-actions').style.display = 'block';
-        }
-        function removerItem(id) {
-            firebase.database().ref('itens/' + id).remove();
-        }
-        function addItem() {
-            const name = document.getElementById('itemName').value;
-            const quantity = document.getElementById('itemQuantity').value;
-            firebase.database().ref('itens').push({ name, quantity, checked: false, restock: false });
-        }
-    </script>
+    <div class="legenda">
+        <p><strong>QN</strong> - Quantidade Normal | <strong>(*R)</strong> - Material Extra de Reposição | <strong>LACRE</strong> - Equipamento lacrado após utilização. Após reposição, deve ser lacrado novamente. | <em>* Rodear a quantidade correspondente</em></p>
+    </div>
 </body>
 </html>
