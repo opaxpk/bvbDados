@@ -3,44 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Inventário</title>
+    <title>Checklist</title>
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            padding: 20px;
-            background: #f4f4f9;
-        }
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-bottom: 20px;
-        }
-        th, td {
-            padding: 10px;
-            text-align: left;
-            border: 1px solid #ddd;
-        }
-        th {
-            background-color: #f2f2f2;
-        }
-        .admin-actions {
-            display: none;
-        }
-        .button {
-            padding: 10px;
-            background-color: #4CAF50;
-            color: white;
-            border: none;
-            cursor: pointer;
-        }
-        .button:hover {
-            background-color: #45a049;
-        }
-        .input-field {
-            padding: 5px;
-            margin: 5px;
-            width: 150px;
-        }
+        /* Seu estilo CSS aqui */
     </style>
 </head>
 <body>
@@ -53,20 +18,22 @@
                 <th>Quantidade</th>
                 <th>Verificado</th>
                 <th>Repor</th>
+                <th>Ações</th>
             </tr>
         </thead>
         <tbody id="checklistBody"></tbody>
     </table>
 
-    <div class="admin-actions">
+    <div class="admin-actions" style="display:none;">
         <input class="input-field" type="text" id="itemName" placeholder="Nome do Item">
         <input class="input-field" type="number" id="itemQuantity" placeholder="Quantidade">
         <button class="button" onclick="addItem()">Adicionar Item</button>
     </div>
 
+    <!-- Firebase v8.x -->
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
-
+    
     <script>
         // Configuração do Firebase
         const firebaseConfig = {
@@ -80,16 +47,12 @@
             measurementId: "G-TYSGD43C72"
         };
 
-        // Inicializa o Firebase com a versão 8.x
+        // Inicializa o Firebase
         firebase.initializeApp(firebaseConfig);
-
-        // Agora você pode acessar o Realtime Database
-        const db = firebase.database();
-        
 
         // Função para carregar itens da checklist
         function loadChecklist() {
-            const checklistRef = db.ref('checklist');
+            const checklistRef = firebase.database().ref('checklist');
             checklistRef.on('value', (snapshot) => {
                 const data = snapshot.val();
                 const checklistBody = document.getElementById('checklistBody');
@@ -102,6 +65,9 @@
                         <td>${item.quantity}</td>
                         <td><input type="checkbox" ${item.checked ? 'checked' : ''} onchange="updateItem('${key}', 'checked', this.checked)"></td>
                         <td><input type="checkbox" ${item.restock ? 'checked' : ''} onchange="updateItem('${key}', 'restock', this.checked)"></td>
+                        <td>
+                            ${isAdmin ? `<button onclick="removeItem('${key}')">Remover</button>` : ''}
+                        </td>
                     `;
                     checklistBody.appendChild(row);
                 }
@@ -119,16 +85,28 @@
                     checked: false,
                     restock: false
                 };
-                const checklistRef = db.ref('checklist');
+                const checklistRef = firebase.database().ref('checklist');
                 checklistRef.push(newItem);
                 document.getElementById('itemName').value = '';
                 document.getElementById('itemQuantity').value = '';
             }
         }
 
+        // Função para remover item
+        function removeItem(itemKey) {
+            const checklistRef = firebase.database().ref('checklist/' + itemKey);
+            checklistRef.remove()
+                .then(() => {
+                    console.log('Item removido com sucesso');
+                })
+                .catch((error) => {
+                    console.error('Erro ao remover o item:', error);
+                });
+        }
+
         // Função para atualizar item (verificado / precisa repor)
         function updateItem(key, field, value) {
-            const checklistRef = db.ref('checklist/' + key);
+            const checklistRef = firebase.database().ref('checklist/' + key);
             checklistRef.update({ [field]: value });
         }
 
