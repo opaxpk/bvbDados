@@ -49,8 +49,8 @@
     <table id="checklistTable">
         <thead>
             <tr>
-                <th>Nome</th>
                 <th>Quantidade</th>
+                <th>Nome</th>
                 <th>Verificado</th>
                 <th>Repor</th>
             </tr>
@@ -80,9 +80,11 @@
             measurementId: "G-TYSGD43C72"
         };
 
-        // Initialize Firebase
-        const app = initializeApp(firebaseConfig);
-        const analytics = getAnalytics(app);
+        // Inicializa o Firebase com a versão 8.x
+        firebase.initializeApp(firebaseConfig);
+
+        // Agora você pode acessar o Realtime Database
+        const db = firebase.database();
         
 
         // Função para carregar itens da checklist
