@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Checklist</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            background: #f4f4f9;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+        th, td {
+            padding: 10px;
+            text-align: left;
+            border: 1px solid #ddd;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        .admin-actions {
+            display: none;
+        }
+        .button {
+            padding: 10px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        .button:hover {
+            background-color: #45a049;
+        }
+        .input-field {
+            padding: 5px;
+            margin: 5px;
+            width: 150px;
+        }
+    </style>
+</head>
+<body>
+
+    <h2>Checklist de Inventário</h2>
+    <table id="checklistTable">
+        <thead>
+            <tr>
+                <th>Nome</th>
+                <th>Quantidade</th>
+                <th>Verificado</th>
+                <th>Repor</th>
+            </tr>
+        </thead>
+        <tbody id="checklistBody"></tbody>
+    </table>
+
+    <div class="admin-actions">
+        <input class="input-field" type="text" id="itemName" placeholder="Nome do Item">
+        <input class="input-field" type="number" id="itemQuantity" placeholder="Quantidade">
+        <button class="button" onclick="addItem()">Adicionar Item</button>
+    </div>
+
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js"></script>
+    <script>
+        // Configuração do Firebase
+        const firebaseConfig = {
+            apiKey: "AIzaSyCONI5jggdZmpWU6XyExDUILRwb6PZ3ww8",
+            authDomain: "bvbdados.firebaseapp.com",
+            databaseURL: "https://bvbdados-default-rtdb.europe-west1.firebasedatabase.app",
+            projectId: "bvbdados",
+            storageBucket: "bvbdados.firebasestorage.app",
+            messagingSenderId: "1023617367181",
+            appId: "1:1023617367181:web:1278c64ceefb14e2ff76c4",
+            measurementId: "G-TYSGD43C72"
+        };
+        const app = firebase.initializeApp(firebaseConfig);
+        const db = firebase.database();
+
+        // Função para carregar itens da checklist
+        function loadChecklist() {
+            const checklistRef = db.ref('checklist');
+            checklistRef.on('value', (snapshot) => {
+                const data = snapshot.val();
+                const checklistBody = document.getElementById('checklistBody');
+                checklistBody.innerHTML = '';
+                for (const key in data) {
+                    const item = data[key];
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td>${item.name}</td>
+                        <td>${item.quantity}</td>
+                        <td><input type="checkbox" ${item.checked ? 'checked' : ''} onchange="updateItem('${key}', 'checked', this.checked)"></td>
+                        <td><input type="checkbox" ${item.restock ? 'checked' : ''} onchange="updateItem('${key}', 'restock', this.checked)"></td>
+                    `;
+                    checklistBody.appendChild(row);
+                }
+            });
+        }
+
+        // Função para adicionar item (admin)
+        function addItem() {
+            const name = document.getElementById('itemName').value;
+            const quantity = document.getElementById('itemQuantity').value;
+            if (name && quantity) {
+                const newItem = {
+                    name: name,
+                    quantity: quantity,
+                    checked: false,
+                    restock: false
+                };
+                const checklistRef = db.ref('checklist');
+                checklistRef.push(newItem);
+                document.getElementById('itemName').value = '';
+                document.getElementById('itemQuantity').value = '';
+            }
+        }
+
+        // Função para atualizar item (verificado / precisa repor)
+        function updateItem(key, field, value) {
+            const checklistRef = db.ref('checklist/' + key);
+            checklistRef.update({ [field]: value });
+        }
+
+        // Detectar se é admin (com base em um parâmetro simples)
+        const isAdmin = window.location.search.includes('admin=true');
+        if (isAdmin) {
+            document.querySelector('.admin-actions').style.display = 'block';
+        }
+
+        // Carregar checklist na inicialização
+        loadChecklist();
+    </script>
+
+</body>
+</html>
