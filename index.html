@@ -112,7 +112,7 @@
             </thead>
             <tbody id="saco-abordagem-body"></tbody>
         </table>
-        <h3>Saco de Trauma</h3>
+        <h3 class="verde">Saco de Trauma</h3>
         <table class="verde">
             <thead>
                 <tr>
@@ -125,7 +125,7 @@
             </thead>
             <tbody id="saco-trauma-body"></tbody>
         </table>
-        <h3>Saco Pediátrico Lacre</h3>
+        <h3 class="amarelo">Saco Pediátrico Lacre</h3>
         <table class="amarelo">
             <thead>
                 <tr>
@@ -147,5 +147,23 @@
     <div class="legenda">
         <p><strong>QN</strong> - Quantidade Normal | <strong>(*R)</strong> - Material Extra de Reposição | <strong>LACRE</strong> - Equipamento lacrado após utilização. Após reposição, deve ser lacrado novamente. | <em>* Rodear a quantidade correspondente</em></p>
     </div>
+
+    <script>
+        window.onload = function() {
+            const isAdmin = window.location.search.includes('admin=true');
+            if (isAdmin) {
+                document.querySelectorAll('.acoes').forEach(coluna => coluna.style.display = 'table-cell');
+                document.querySelector('.admin-actions').style.display = 'block';
+            }
+        };
+
+        function addItem() {
+            const nome = document.getElementById('itemName').value;
+            const quantidade = document.getElementById('itemQuantity').value;
+            if (nome && quantidade) {
+                alert(`Item "${nome}" com quantidade "${quantidade}" adicionado!`);
+            }
+        }
+    </script>
 </body>
 </html>
