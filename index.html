@@ -3,12 +3,31 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Checklist</title>
+    <title>Checklist Dividida com Admin</title>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
     <style>
         body {
+            display: flex;
             font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+        .legenda {
+            width: 250px;
+            position: fixed;
+            height: 100vh;
+            background-color: #f0f0f0;
             padding: 20px;
-            background: #f4f4f9;
+            box-shadow: 2px 0 5px rgba(0,0,0,0.1);
+        }
+        .legenda h3 {
+            margin-top: 0;
+        }
+        .conteudo {
+            margin-left: 270px;
+            padding: 20px;
+            width: calc(100% - 270px);
         }
         table {
             width: 100%;
@@ -16,163 +35,147 @@
             margin-bottom: 20px;
         }
         th, td {
-            padding: 10px;
-            text-align: left;
             border: 1px solid #ddd;
+            padding: 8px;
+            text-align: center;
         }
         th {
-            background-color: #f2f2f2;
+            background-color: #ccc;
+        }
+        .cinza {
+            background-color: #d9d9d9;
+        }
+        .azul {
+            background-color: #add8e6;
+        }
+        .verde {
+            background-color: #90ee90;
+        }
+        .amarelo {
+            background-color: #ffff99;
+        }
+        .btn-remover {
+            background-color: red;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+        .btn-remover:hover {
+            background-color: darkred;
         }
         .admin-actions {
             display: none;
+            margin-top: 20px;
         }
-        .button {
-            padding: 10px;
-            background-color: #4CAF50;
-            color: white;
-            border: none;
-            cursor: pointer;
-        }
-        .button:hover {
-            background-color: #45a049;
-        }
-        .input-field {
-            padding: 5px;
-            margin: 5px;
-            width: 150px;
-        }
-        
-        /* Estilo para o botão de remover */
-        button {
-            background-color: red; /* Fundo vermelho */
-            color: white; /* Texto branco */
-            border: none; /* Remove borda */
-            padding: 5px 10px; /* Espaçamento */
-            cursor: pointer; /* Cursor de clique */
-            border-radius: 5px; /* Bordas arredondadas */
-        }
-
-        button:hover {
-            background-color: darkred; /* Muda para um vermelho mais escuro quando o mouse passa por cima */
-        }
-
     </style>
 </head>
 <body>
-
-    <h2>Checklist de Inventário</h2>
-    <table id="checklistTable">
-        <thead>
-            <tr>
-                <th>Nome</th>
-                <th>Quantidade</th>
-                <th>Verificado</th>
-                <th>Repor</th>
-                <th class="actions-column" style="display: none;">Ações</th> <!-- Escondemos a coluna de ações -->
-            </tr>
-        </thead>
-        <tbody id="checklistBody"></tbody>
-    </table>
-
-    <div class="admin-actions" style="display:none;">
-        <input class="input-field" type="text" id="itemName" placeholder="Nome do Item">
-        <input class="input-field" type="number" id="itemQuantity" placeholder="Quantidade">
-        <button class="button" onclick="addItem()">Adicionar Item</button>
+    <div class="legenda">
+        <h3>Legenda</h3>
+        <p><strong>QN</strong> - Quantidade Normal</p>
+        <p><strong>(*R)</strong> - Material Extra de Reposição</p>
+        <p><strong>LACRE</strong> - Equipamento lacrado após utilização. Após a reposição, deve ser lacrado novamente.</p>
+        <p><em>* Rodear a quantidade correspondente</em></p>
     </div>
-
-    <!-- Firebase v8.x -->
-    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
-    
+    <div class="conteudo">
+        <h2>Cabine de Condução</h2>
+        <table class="cinza">
+            <thead>
+                <tr>
+                    <th>Nome</th>
+                    <th>Quantidade</th>
+                    <th>Verificado</th>
+                    <th>Repor</th>
+                    <th class="acoes" style="display: none;">Ações</th>
+                </tr>
+            </thead>
+            <tbody id="cabine-conducao-body"></tbody>
+        </table>
+        <h2>Célula Sanitária</h2>
+        <table class="cinza">
+            <thead>
+                <tr>
+                    <th>Nome</th>
+                    <th>Quantidade</th>
+                    <th>Verificado</th>
+                    <th>Repor</th>
+                    <th class="acoes" style="display: none;">Ações</th>
+                </tr>
+            </thead>
+            <tbody id="celula-sanitaria-body"></tbody>
+        </table>
+        <h3>Saco de Abordagem à Vítima</h3>
+        <table class="azul">
+            <thead>
+                <tr>
+                    <th>Nome</th>
+                    <th>Quantidade</th>
+                    <th>Verificado</th>
+                    <th>Repor</th>
+                    <th class="acoes" style="display: none;">Ações</th>
+                </tr>
+            </thead>
+            <tbody id="saco-abordagem-body"></tbody>
+        </table>
+        <h3>Saco de Trauma</h3>
+        <table class="verde">
+            <thead>
+                <tr>
+                    <th>Nome</th>
+                    <th>Quantidade</th>
+                    <th>Verificado</th>
+                    <th>Repor</th>
+                    <th class="acoes" style="display: none;">Ações</th>
+                </tr>
+            </thead>
+            <tbody id="saco-trauma-body"></tbody>
+        </table>
+        <h3>Saco Pediátrico Lacre</h3>
+        <table class="amarelo">
+            <thead>
+                <tr>
+                    <th>Nome</th>
+                    <th>Quantidade</th>
+                    <th>Verificado</th>
+                    <th>Repor</th>
+                    <th class="acoes" style="display: none;">Ações</th>
+                </tr>
+            </thead>
+            <tbody id="saco-pediatrico-body"></tbody>
+        </table>
+        <div class="admin-actions">
+            <input type="text" id="itemName" placeholder="Nome do Item">
+            <input type="number" id="itemQuantity" placeholder="Quantidade">
+            <button onclick="addItem()">Adicionar Item</button>
+        </div>
+    </div>
     <script>
-        // Configuração do Firebase
         const firebaseConfig = {
-            aapiKey: "AIzaSyCONI5jggdZmpWU6XyExDUILRwb6PZ3ww8",
+            apiKey: "AIzaSyCONI5jggdZmpWU6XyExDUILRwb6PZ3ww8",
             authDomain: "bvbdados.firebaseapp.com",
             databaseURL: "https://bvbdados-default-rtdb.europe-west1.firebasedatabase.app",
             projectId: "bvbdados",
-            storageBucket: "bvbdados.firebasestorage.app",
+            storageBucket: "bvbdados.appspot.com",
             messagingSenderId: "1023617367181",
-            appId: "1:1023617367181:web:1278c64ceefb14e2ff76c4",
-            measurementId: "G-TYSGD43C72"
+            appId: "1:1023617367181:web:1278c64ceefb14e2ff76c4"
         };
-
-        // Inicializa o Firebase
         firebase.initializeApp(firebaseConfig);
-
-        // Função para carregar itens da checklist
-        function loadChecklist() {
-            const checklistRef = firebase.database().ref('checklist');
-            checklistRef.on('value', (snapshot) => {
-                const data = snapshot.val();
-                const checklistBody = document.getElementById('checklistBody');
-                checklistBody.innerHTML = '';
-                for (const key in data) {
-                    const item = data[key];
-                    const row = document.createElement('tr');
-                    row.innerHTML = `
-                        <td>${item.name}</td>
-                        <td>${item.quantity}</td>
-                        <td><input type="checkbox" ${item.checked ? 'checked' : ''} onchange="updateItem('${key}', 'checked', this.checked)"></td>
-                        <td><input type="checkbox" ${item.restock ? 'checked' : ''} onchange="updateItem('${key}', 'restock', this.checked)"></td>
-                        <td>
-                            ${isAdmin ? `<button onclick="removeItem('${key}')">Remover</button>` : ''}
-                        </td>
-                    `;
-                    checklistBody.appendChild(row);
-                }
-            });
+        const urlParams = new URLSearchParams(window.location.search);
+        const isAdmin = urlParams.get('admin') === 'true';
+        if (isAdmin) {
+            document.querySelectorAll('.acoes').forEach(el => el.style.display = 'table-cell');
+            document.querySelector('.admin-actions').style.display = 'block';
         }
-
-        // Função para adicionar item (admin)
+        function removerItem(id) {
+            firebase.database().ref('itens/' + id).remove();
+        }
         function addItem() {
             const name = document.getElementById('itemName').value;
             const quantity = document.getElementById('itemQuantity').value;
-            if (name && quantity) {
-                const newItem = {
-                    name: name,
-                    quantity: quantity,
-                    checked: false,
-                    restock: false
-                };
-                const checklistRef = firebase.database().ref('checklist');
-                checklistRef.push(newItem);
-                document.getElementById('itemName').value = '';
-                document.getElementById('itemQuantity').value = '';
-            }
+            firebase.database().ref('itens').push({ name, quantity, checked: false, restock: false });
         }
-
-        // Função para remover item
-        function removeItem(itemKey) {
-            const checklistRef = firebase.database().ref('checklist/' + itemKey);
-            checklistRef.remove()
-                .then(() => {
-                    console.log('Item removido com sucesso');
-                })
-                .catch((error) => {
-                    console.error('Erro ao remover o item:', error);
-                });
-        }
-
-        // Função para atualizar item (verificado / precisa repor)
-        function updateItem(key, field, value) {
-            const checklistRef = firebase.database().ref('checklist/' + key);
-            checklistRef.update({ [field]: value });
-        }
-
-        // Detectar se é admin (com base em um parâmetro simples)
-        const isAdmin = window.location.search.includes('admin=true');
-        if (isAdmin) {
-            // Exibir a coluna de ações
-            document.querySelector('.actions-column').style.display = 'table-cell';
-            
-            // Exibir a área de administração (botões de adicionar)
-            document.querySelector('.admin-actions').style.display = 'block';
-        }
-
-        // Carregar checklist na inicialização
-        loadChecklist();
     </script>
-
 </body>
 </html>
