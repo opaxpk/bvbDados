@@ -41,6 +41,21 @@
             margin: 5px;
             width: 150px;
         }
+        
+        /* Estilo para o botão de remover */
+        button {
+            background-color: red; /* Fundo vermelho */
+            color: white; /* Texto branco */
+            border: none; /* Remove borda */
+            padding: 5px 10px; /* Espaçamento */
+            cursor: pointer; /* Cursor de clique */
+            border-radius: 5px; /* Bordas arredondadas */
+        }
+
+        button:hover {
+            background-color: darkred; /* Muda para um vermelho mais escuro quando o mouse passa por cima */
+        }
+
     </style>
 </head>
 <body>
@@ -53,7 +68,7 @@
                 <th>Quantidade</th>
                 <th>Verificado</th>
                 <th>Repor</th>
-                <th>Ações</th>
+                <th class="actions-column" style="display: none;">Ações</th> <!-- Escondemos a coluna de ações -->
             </tr>
         </thead>
         <tbody id="checklistBody"></tbody>
@@ -72,7 +87,7 @@
     <script>
         // Configuração do Firebase
         const firebaseConfig = {
-            apiKey: "AIzaSyCONI5jggdZmpWU6XyExDUILRwb6PZ3ww8",
+            aapiKey: "AIzaSyCONI5jggdZmpWU6XyExDUILRwb6PZ3ww8",
             authDomain: "bvbdados.firebaseapp.com",
             databaseURL: "https://bvbdados-default-rtdb.europe-west1.firebasedatabase.app",
             projectId: "bvbdados",
@@ -148,6 +163,10 @@
         // Detectar se é admin (com base em um parâmetro simples)
         const isAdmin = window.location.search.includes('admin=true');
         if (isAdmin) {
+            // Exibir a coluna de ações
+            document.querySelector('.actions-column').style.display = 'table-cell';
+            
+            // Exibir a área de administração (botões de adicionar)
             document.querySelector('.admin-actions').style.display = 'block';
         }
 
