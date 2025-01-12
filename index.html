@@ -64,8 +64,9 @@
         <button class="button" onclick="addItem()">Adicionar Item</button>
     </div>
 
-    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+
     <script>
         // Configuração do Firebase
         const firebaseConfig = {
@@ -78,8 +79,11 @@
             appId: "1:1023617367181:web:1278c64ceefb14e2ff76c4",
             measurementId: "G-TYSGD43C72"
         };
-        const app = firebase.initializeApp(firebaseConfig);
-        const db = firebase.database();
+
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const analytics = getAnalytics(app);
+        
 
         // Função para carregar itens da checklist
         function loadChecklist() {
