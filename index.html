@@ -80,6 +80,7 @@
         .admin-actions {
             display: none;
             margin-top: 20px;
+            margin-bottom: 20px;
         }
 
         /* Estilos para dispositivos móveis */
@@ -141,6 +142,22 @@
 <body>
     <div class="conteudo">
         <h1>Base de Dados</h1>
+
+         <div class="admin-actions">
+            <select id="categoria">
+                <option value="cabine-conducao-body">Cabine de Condução</option>
+                <option value="saco-abordagem-body">Saco de Abordagem à Vítima</option>
+                <option value="saco-trauma-body">Saco de Trauma</option>
+                <option value="saco-pediatrico-body">Saco Pediátrico ℗ Lacre</option>
+            </select>
+            <input type="text" id="itemName" placeholder="Nome do Item">
+            <input type="number" id="itemQuantity" placeholder="Quantidade">
+            <button class="btn-add" onclick="addItem()">Adicionar Item</button>
+            <button class="btn-lacre" onclick="alternarEtiqueta(' (Lacre)')">Lacre</button>
+            <button class="btn-reposicao" onclick="alternarEtiqueta(' (*R)')">(*R)</button>
+            <button class="btn-pediatra" onclick="alternarEtiqueta(' ℗')">℗</button>
+        </div>
+
         <h2>Cabine de Condução</h2>
         <table class="cinza">
             <thead>
@@ -197,20 +214,7 @@
             <tbody id="saco-pediatrico-body"></tbody>
         </table>
 
-        <div class="admin-actions">
-            <select id="categoria">
-                <option value="cabine-conducao-body">Cabine de Condução</option>
-                <option value="saco-abordagem-body">Saco de Abordagem à Vítima</option>
-                <option value="saco-trauma-body">Saco de Trauma</option>
-                <option value="saco-pediatrico-body">Saco Pediátrico ℗ Lacre</option>
-            </select>
-            <input type="text" id="itemName" placeholder="Nome do Item">
-            <input type="number" id="itemQuantity" placeholder="Quantidade">
-            <button class="btn-add" onclick="addItem()">Adicionar Item</button>
-            <button class="btn-lacre" onclick="alternarEtiqueta(' (Lacre)')">Lacre</button>
-            <button class="btn-reposicao" onclick="alternarEtiqueta(' (*R)')">(*R)</button>
-            <button class="btn-pediatra" onclick="alternarEtiqueta(' ℗')">℗</button>
-        </div>
+       
     </div>
 
     <div class="legenda">
