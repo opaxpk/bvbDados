@@ -151,47 +151,6 @@
             background-color: #45a049;
         }
 
-        /* Estilo para o pop-up */
-        .popup {
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            background-color: #f1f1f1;
-            border: 1px solid #ddd;
-            padding: 20px;
-            display: none;
-            z-index: 101;
-            border-radius: 5px;
-            font-size: 16px;
-            text-align: center;
-            min-width: 200px;
-        }
-
-        .popup.green {
-            background-color: #4CAF50;
-            color: white;
-        }
-
-        .popup.yellow {
-            background-color: #FFEB3B;
-            color: black;
-        }
-
-        .popup.red {
-            background-color: #F44336;
-            color: white;
-        }
-
-        .popup .close-btn {
-            cursor: pointer;
-            color: white;
-            background-color: black;
-            padding: 5px;
-            margin-top: 10px;
-            border: none;
-            border-radius: 3px;
-        }
     </style>
 </head>
 <body>
@@ -211,6 +170,7 @@
             <button class="btn-lacre" onclick="alternarEtiqueta(' (Lacre)')">Lacre</button>
             <button class="btn-reposicao" onclick="alternarEtiqueta(' (*R)')">(*R)</button>
             <button class="btn-pediatra" onclick="alternarEtiqueta(' ℗')">℗</button>
+
         </div>
 
         <h2>Cabine de Condução</h2>
@@ -226,7 +186,6 @@
             </thead>
             <tbody id="cabine-conducao-body"></tbody>
         </table>
-
         <h1>Célula Sanitária</h1>
         <h2>Saco de Abordagem à Vítima</h2>
         <table class="azul">
@@ -269,17 +228,12 @@
             </thead>
             <tbody id="saco-pediatrico-body"></tbody>
         </table>
+
        
     </div>
 
     <div class="legenda">
         <p><strong>QN</strong> - Quantidade Normal | <strong>(*R)</strong> - Material Extra de Reposição | <strong>℗</strong> - Pediatra | <strong>LACRE</strong> - Equipamento lacrado após utilização. Após reposição, deve ser lacrado novamente. | <em>* Escolher a Quantidade: 50-100  / 100-200 / 200</em></p>
-    </div>
-
-    <!-- Pop-up -->
-    <div id="popup" class="popup">
-        <p id="popup-message"></p>
-        <button class="close-btn" onclick="closePopup()">Fechar</button>
     </div>
 
     <script>
@@ -294,9 +248,40 @@
             appId: "1:1023617367181:web:1278c64ceefb14e2ff76c4",
             measurementId: "G-TYSGD43C72"
         };
+
         // Inicializa o Firebase
         firebase.initializeApp(firebaseConfig);
         var database = firebase.database();
+
+        window.onload = function() {
+            const isAdmin = window.location.search.includes('admin=true');
+            
+            // Mostrar ou esconder colunas de ações e admin actions
+            if (isAdmin) {
+                document.querySelectorAll('.acoes').forEach(coluna => coluna.style.display = 'table-cell');
+                document.querySelector('.admin-actions').style.display = 'block';
+            } else {
+                document.querySelectorAll('.acoes').forEach(coluna => coluna.style.display = 'none');
+            }
+
+            // Carregar os dados do Firebase e adicionar à tabela
+            const categorias = ['cabine-conducao-body', 'saco-abordagem-body', 'saco-trauma-body', 'saco-pediatrico-body'];
+            categorias.forEach(categoria => {
+                const tbody = document.getElementById(categoria);
+                const ref = database.ref(categoria);
+                ref.on('child_added', (snapshot) => {
+                    const data = snapshot.val();
+                    const row = document.createElement('tr');
+                    row.setAttribute('data-id', snapshot.key); // Atribuir um ID único para cada linha
+                    row.innerHTML = `<td contenteditable='true' onblur='updateName("${snapshot.key}", "${categoria}", this.textContent)'>${data.nome}</td>
+                                     <td contenteditable='true' onblur='updateItem("${snapshot.key}", "${categoria}", "quantidade", this.textContent)'>${data.quantidade}</td>
+                                     <td><input type='checkbox' ${data.verificado ? 'checked' : ''} onclick='updateItem("${snapshot.key}", "${categoria}", "verificado", this.checked)'></td>
+                                     <td><input type='checkbox' ${data.repor ? 'checked' : ''} onclick='updateItem("${snapshot.key}", "${categoria}", "repor", this.checked)'></td>
+                                     ${isAdmin ? "<td><button class='btn-remover' onclick='removeItem(\"" + snapshot.key + "\", \"" + categoria + "\")'>Remover</button></td>" : ""}`;
+                    tbody.appendChild(row);
+                });
+            });
+        };
 
         // Função para adicionar item no Firebase
         function addItem() {
@@ -304,46 +289,90 @@
             const itemName = document.getElementById('itemName').value;
             const itemQuantity = document.getElementById('itemQuantity').value;
 
-            if (!itemName || !itemQuantity) {
-                showPopup('Por favor, preencha todos os campos!', 'red');
-                return;
+            if (itemName && itemQuantity) {
+                const newItemRef = database.ref(categoria).push();
+                newItemRef.set({
+                    nome: itemName,
+                    quantidade: itemQuantity,
+                    verificado: false,
+                    repor: false
+                }).then(() => {
+                    showPopup('Item adicionado com sucesso!', 'green');
+                }).catch(error => {
+                    showPopup('Erro ao adicionar item.', 'red');
+                    console.error('Erro ao adicionar item: ', error);
+                });
+                document.getElementById('itemName').value = '';
+                document.getElementById('itemQuantity').value = '';
+            } else {
+                showPopup('Por favor, preencha todos os campos.', 'yellow');
             }
-
-            if (itemQuantity < 1 || itemQuantity > 500) {
-                showPopup('Quantidade deve ser entre 1 e 500!', 'yellow');
-                return;
-            }
-
-            const newItemRef = database.ref(categoria).push();
-            newItemRef.set({
-                nome: itemName,
-                quantidade: itemQuantity,
-                verificado: false,
-                repor: false
-            });
-
-            showPopup('Item adicionado com sucesso!', 'green');
-            document.getElementById('itemName').value = '';
-            document.getElementById('itemQuantity').value = '';
         }
 
-        // Função para exibir o pop-up
+        // Função para mostrar o popup de sucesso ou erro
         function showPopup(message, color) {
-            const popup = document.getElementById('popup');
-            const popupMessage = document.getElementById('popup-message');
-            popupMessage.textContent = message;
-            popup.classList.add(color);
-            popup.style.display = 'block';
+            const popup = document.createElement('div');
+            popup.textContent = message;
+            popup.style.backgroundColor = color;
+            popup.style.color = 'white';
+            popup.style.padding = '10px';
+            popup.style.textAlign = 'center';
+            popup.style.position = 'fixed';
+            popup.style.top = '10px';
+            popup.style.width = '100%';
+            popup.style.zIndex = '1000';
+            document.body.appendChild(popup);
+            setTimeout(() => {
+                popup.remove();
+            }, 3000);
         }
 
-        // Função para fechar o pop-up
-        function closePopup() {
-            const popup = document.getElementById('popup');
-            popup.style.display = 'none';
-            popup.classList.remove('green', 'yellow', 'red');
+        // Função para atualizar o nome no Firebase
+        function updateName(id, categoria, novoNome) {
+            if (novoNome.trim() !== "") {
+                const itemRef = database.ref(`${categoria}/${id}`);
+                itemRef.update({ nome: novoNome })
+                    .then(() => {
+                        console.log('Nome atualizado com sucesso!');
+                    })
+                    .catch((error) => {
+                        console.error('Erro ao atualizar nome: ', error);
+                    });
+            }
         }
 
-        // Função para alternar etiquetas
+        // Função para atualizar outros campos
+        function updateItem(id, categoria, campo, valor) {
+            const itemRef = database.ref(`${categoria}/${id}`);
+            const updates = {};
+            updates[campo] = valor;
+            itemRef.update(updates)
+                .then(() => {
+                    console.log(`${campo} atualizado com sucesso!`);
+                })
+                .catch((error) => {
+                    console.error(`Erro ao atualizar ${campo}: `, error);
+                });
+        }
+
+        // Função para remover item do Firebase
+        function removeItem(id, categoria) {
+            const itemRef = database.ref(`${categoria}/${id}`);
+            itemRef.remove()
+                .then(() => {
+                    console.log('Item removido com sucesso do Firebase!');
+                    // Remover a linha da tabela
+                    const row = document.querySelector(`tr[data-id="${id}"]`);
+                    if (row) {
+                        row.remove();
+                    }
+                })
+                .catch((error) => {
+                    console.error('Erro ao remover item do Firebase: ', error);
+                });
+        }
+
+        // Alternar etiquetas (Lacre, (*R), ℗)
         function alternarEtiqueta(etiqueta) {
             alert(`Etiqueta ${etiqueta} foi aplicada.`);
         }
