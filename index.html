@@ -135,6 +135,46 @@
         <p><strong>QN</strong> - Quantidade Normal | <strong>(*R)</strong> - Material Extra de Reposição | <strong>LACRE</strong> - Equipamento lacrado após utilização. Após reposição, deve ser lacrado novamente. | <em>* Rodear a quantidade correspondente</em></p>
     </div>
     <script>
+        // Configuração do Firebase
+        const firebaseConfig = {
+            aapiKey: "AIzaSyCONI5jggdZmpWU6XyExDUILRwb6PZ3ww8",
+            authDomain: "bvbdados.firebaseapp.com",
+            databaseURL: "https://bvbdados-default-rtdb.europe-west1.firebasedatabase.app",
+            projectId: "bvbdados",
+            storageBucket: "bvbdados.firebasestorage.app",
+            messagingSenderId: "1023617367181",
+            appId: "1:1023617367181:web:1278c64ceefb14e2ff76c4",
+            measurementId: "G-TYSGD43C72"
+        };
+
+        // Inicializa o Firebase
+        firebase.initializeApp(firebaseConfig);
+
+        // Função para carregar itens da checklist
+        function loadChecklist() {
+            const checklistRef = firebase.database().ref('checklist');
+            checklistRef.on('value', (snapshot) => {
+                const data = snapshot.val();
+                const checklistBody = document.getElementById('checklistBody');
+                checklistBody.innerHTML = '';
+                for (const key in data) {
+                    const item = data[key];
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td>${item.name}</td>
+                        <td>${item.quantity}</td>
+                        <td><input type="checkbox" ${item.checked ? 'checked' : ''} onchange="updateItem('${key}', 'checked', this.checked)"></td>
+                        <td><input type="checkbox" ${item.restock ? 'checked' : ''} onchange="updateItem('${key}', 'restock', this.checked)"></td>
+                        <td>
+                            ${isAdmin ? `<button onclick="removeItem('${key}')">Remover</button>` : ''}
+                        </td>
+                    `;
+                    checklistBody.appendChild(row);
+                }
+            });
+        }
+        
+
         window.onload = function() {
             const isAdmin = window.location.search.includes('admin=true');
             if (isAdmin) {
