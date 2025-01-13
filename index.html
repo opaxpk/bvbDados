@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Checklist Dividida com Admin</title>
+    <title>Bombeiros Voluntários de Barcelinhos</title>
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
     <style>
@@ -17,13 +17,21 @@
         }
         .legenda {
             width: 100%;
-            position: fixed;
+            position: sticky;
             bottom: 0;
             background-color: #f0f0f0;
             padding: 10px;
-            box-shadow: 0 -2px 5px rgba(0,0,0,0.1);
+            box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.1);
             font-size: 12px;
             text-align: center;
+            z-index: 100;
+            }
+
+        @media (max-width: 600px) {
+            .legenda {
+                font-size: 10px;
+                padding: 8px;
+            }
         }
         .conteudo {
             margin-bottom: 100px;
@@ -53,6 +61,7 @@
 </head>
 <body>
     <div class="conteudo">
+        <h1>Base de Dados</h1>
         <h2>Cabine de Condução</h2>
         <table class="cinza">
             <thead>
