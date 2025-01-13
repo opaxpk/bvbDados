@@ -142,7 +142,6 @@
                 document.querySelector('.admin-actions').style.display = 'block';
             }
         };
-
         function addItem() {
             const categoria = document.getElementById('categoria').value;
             const nome = document.getElementById('itemName').value;
@@ -150,7 +149,7 @@
             if (nome && quantidade) {
                 const tbody = document.getElementById(categoria);
                 const row = document.createElement('tr');
-                row.innerHTML = `<td>${nome}</td><td>${quantidade}</td><td><input type='checkbox'></td><td><input type='checkbox'></td><td><button class='btn-remover' onclick='this.parentElement.parentElement.remove()'>Remover</button></td>`;
+                row.innerHTML = `<td>${nome}</td><td contenteditable='true'>${quantidade}</td><td><input type='checkbox'></td><td><input type='checkbox'></td><td><button class='btn-remover' onclick='this.parentElement.parentElement.remove()'>Remover</button></td>`;
                 tbody.appendChild(row);
             }
         }
