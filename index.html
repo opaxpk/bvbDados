@@ -384,6 +384,21 @@
                 });
             });
         }
+
+        function carregarItens() {
+            const categorias = ['cabine-conducao-body', 'saco-abordagem-body', 'saco-trauma-body', 'saco-pediatrico-body'];
+            categorias.forEach(categoria => {
+                const ref = database.ref(categoria);
+                ref.once('value', function(snapshot) {
+                    snapshot.forEach(function(childSnapshot) {
+                        const item = childSnapshot.val();
+                        gerarBotoesQuantidade(item.nome, categoria);
+                    });
+                });
+            });
+        }
+
+        window.onload = carregarItens;
     </script>
 </body>
 </html>
