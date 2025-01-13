@@ -26,7 +26,7 @@
             text-align: center;
         }
         .conteudo {
-            margin-bottom: 60px;
+            margin-bottom: 100px;
             padding: 20px;
         }
         table {
@@ -42,33 +42,13 @@
         th {
             background-color: #ccc;
         }
-        .cinza {
-            background-color: #d9d9d9;
-        }
-        .azul {
-            background-color: #add8e6;
-        }
-        .verde {
-            background-color: #90ee90;
-        }
-        .amarelo {
-            background-color: #ffff99;
-        }
-        .btn-remover {
-            background-color: red;
-            color: white;
-            border: none;
-            padding: 5px 10px;
-            cursor: pointer;
-            border-radius: 5px;
-        }
-        .btn-remover:hover {
-            background-color: darkred;
-        }
-        .admin-actions {
-            display: none;
-            margin-top: 20px;
-        }
+        .cinza { background-color: #d9d9d9; }
+        .azul { background-color: #add8e6; }
+        .verde { background-color: #90ee90; }
+        .amarelo { background-color: #ffff99; }
+        .btn-remover { background-color: red; color: white; border: none; padding: 5px 10px; cursor: pointer; border-radius: 5px; }
+        .btn-remover:hover { background-color: darkred; }
+        .admin-actions { display: none; margin-top: 20px; }
     </style>
 </head>
 <body>
@@ -112,7 +92,7 @@
             </thead>
             <tbody id="saco-abordagem-body"></tbody>
         </table>
-        <h3 class="verde">Saco de Trauma</h3>
+        <h3>Saco de Trauma</h3>
         <table class="verde">
             <thead>
                 <tr>
@@ -125,7 +105,7 @@
             </thead>
             <tbody id="saco-trauma-body"></tbody>
         </table>
-        <h3 class="amarelo">Saco Pediátrico Lacre</h3>
+        <h3>Saco Pediátrico Lacre</h3>
         <table class="amarelo">
             <thead>
                 <tr>
@@ -139,6 +119,13 @@
             <tbody id="saco-pediatrico-body"></tbody>
         </table>
         <div class="admin-actions">
+            <select id="categoria">
+                <option value="cabine-conducao-body">Cabine de Condução</option>
+                <option value="celula-sanitaria-body">Célula Sanitária</option>
+                <option value="saco-abordagem-body">Saco de Abordagem à Vítima</option>
+                <option value="saco-trauma-body">Saco de Trauma</option>
+                <option value="saco-pediatrico-body">Saco Pediátrico Lacre</option>
+            </select>
             <input type="text" id="itemName" placeholder="Nome do Item">
             <input type="number" id="itemQuantity" placeholder="Quantidade">
             <button onclick="addItem()">Adicionar Item</button>
@@ -147,7 +134,6 @@
     <div class="legenda">
         <p><strong>QN</strong> - Quantidade Normal | <strong>(*R)</strong> - Material Extra de Reposição | <strong>LACRE</strong> - Equipamento lacrado após utilização. Após reposição, deve ser lacrado novamente. | <em>* Rodear a quantidade correspondente</em></p>
     </div>
-
     <script>
         window.onload = function() {
             const isAdmin = window.location.search.includes('admin=true');
@@ -158,10 +144,14 @@
         };
 
         function addItem() {
+            const categoria = document.getElementById('categoria').value;
             const nome = document.getElementById('itemName').value;
             const quantidade = document.getElementById('itemQuantity').value;
             if (nome && quantidade) {
-                alert(`Item "${nome}" com quantidade "${quantidade}" adicionado!`);
+                const tbody = document.getElementById(categoria);
+                const row = document.createElement('tr');
+                row.innerHTML = `<td>${nome}</td><td>${quantidade}</td><td><input type='checkbox'></td><td><input type='checkbox'></td><td><button class='btn-remover' onclick='this.parentElement.parentElement.remove()'>Remover</button></td>`;
+                tbody.appendChild(row);
             }
         }
     </script>
