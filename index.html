@@ -137,6 +137,20 @@
             background-color: darkorange;
         }
 
+        .btn-quantidade {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            cursor: pointer;
+            border-radius: 5px;
+            margin: 2px;
+        }
+
+        .btn-quantidade:hover {
+            background-color: #45a049;
+        }
+
     </style>
 </head>
 <body>
@@ -156,6 +170,9 @@
             <button class="btn-lacre" onclick="alternarEtiqueta(' (Lacre)')">Lacre</button>
             <button class="btn-reposicao" onclick="alternarEtiqueta(' (*R)')">(*R)</button>
             <button class="btn-pediatra" onclick="alternarEtiqueta(' ℗')">℗</button>
+
+            <div id="quantidade-opcoes"></div>
+
         </div>
 
         <h2>Cabine de Condução</h2>
@@ -270,27 +287,17 @@
         function addItem() {
             const categoria = document.getElementById('categoria').value;
             const nome = document.getElementById('itemName').value;
-            const quantidade = document.getElementById('itemQuantity').value;
-            if (nome && quantidade) {
-                // Verificar se o item já existe para evitar duplicação
+            if (nome) {
                 const ref = database.ref(categoria);
-                ref.orderByChild('nome').equalTo(nome).once('value', function(snapshot) {
-                    if (!snapshot.exists()) {
-                        // Enviar dados para o Firebase
-                        const novoItemRef = ref.push();
-                        novoItemRef.set({
-                            nome: nome,
-                            quantidade: quantidade,
-                            verificado: false,
-                            repor: false
-                        }).then(() => {
-                            console.log('Item adicionado com sucesso no Firebase!');
-                        }).catch((error) => {
-                            console.error('Erro ao adicionar item no Firebase: ', error);
-                        });
-                    } else {
-                        alert('Este item já existe!');
-                    }
+                const novoItemRef = ref.push();
+                novoItemRef.set({
+                    nome: nome,
+                    quantidade: 'Não definido'
+                }).then(() => {
+                    gerarBotoesQuantidade(nome, categoria);
+                    alert(`Item "${nome}" adicionado com sucesso!`);
+                }).catch((error) => {
+                    console.error('Erro ao adicionar item:', error);
                 });
             }
         }
@@ -349,6 +356,27 @@
                     });
                 });
             }
+        }
+
+        function gerarBotoesQuantidade(nome, categoria) {
+            const divOpcoes = document.getElementById('quantidade-opcoes');
+            const container = document.createElement('div');
+            container.innerHTML = `<h3>${nome}</h3>
+                <button class='btn-quantidade' onclick="atualizarQuantidade('${nome}', '${categoria}', '50-100')">50-100</button>
+                <button class='btn-quantidade' onclick="atualizarQuantidade('${nome}', '${categoria}', '100-200')">100-200</button>
+                <button class='btn-quantidade' onclick="atualizarQuantidade('${nome}', '${categoria}', '200+')">200+</button>`;
+            divOpcoes.appendChild(container);
+        }
+
+        function atualizarQuantidade(nome, categoria, faixa) {
+            const ref = database.ref(categoria);
+            ref.orderByChild('nome').equalTo(nome).once('value', function(snapshot) {
+                snapshot.forEach(function(childSnapshot) {
+                    childSnapshot.ref.update({ quantidade: faixa })
+                        .then(() => alert(`Quantidade de "${nome}" atualizada para: ${faixa}`))
+                        .catch(error => console.error('Erro ao atualizar quantidade:', error));
+                });
+            });
         }
     </script>
 </body>
