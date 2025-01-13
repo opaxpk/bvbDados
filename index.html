@@ -66,20 +66,8 @@
             </thead>
             <tbody id="cabine-conducao-body"></tbody>
         </table>
-        <h2>Célula Sanitária</h2>
-        <table class="cinza">
-            <thead>
-                <tr>
-                    <th>Nome</th>
-                    <th>Quantidade</th>
-                    <th>Verificado</th>
-                    <th>Repor</th>
-                    <th class="acoes">Ações</th>
-                </tr>
-            </thead>
-            <tbody id="celula-sanitaria-body"></tbody>
-        </table>
-        <h3>Saco de Abordagem à Vítima</h3>
+
+        <h2>Saco de Abordagem à Vítima</h2>
         <table class="azul">
             <thead>
                 <tr>
@@ -92,7 +80,8 @@
             </thead>
             <tbody id="saco-abordagem-body"></tbody>
         </table>
-        <h3>Saco de Trauma</h3>
+
+        <h2>Saco de Trauma</h2>
         <table class="verde">
             <thead>
                 <tr>
@@ -105,7 +94,8 @@
             </thead>
             <tbody id="saco-trauma-body"></tbody>
         </table>
-        <h3>Saco Pediátrico Lacre</h3>
+
+        <h2>Saco Pediátrico Lacre</h2>
         <table class="amarelo">
             <thead>
                 <tr>
@@ -118,10 +108,10 @@
             </thead>
             <tbody id="saco-pediatrico-body"></tbody>
         </table>
+
         <div class="admin-actions">
             <select id="categoria">
                 <option value="cabine-conducao-body">Cabine de Condução</option>
-                <option value="celula-sanitaria-body">Célula Sanitária</option>
                 <option value="saco-abordagem-body">Saco de Abordagem à Vítima</option>
                 <option value="saco-trauma-body">Saco de Trauma</option>
                 <option value="saco-pediatrico-body">Saco Pediátrico Lacre</option>
@@ -131,6 +121,7 @@
             <button onclick="addItem()">Adicionar Item</button>
         </div>
     </div>
+
     <div class="legenda">
         <p><strong>QN</strong> - Quantidade Normal | <strong>(*R)</strong> - Material Extra de Reposição | <strong>LACRE</strong> - Equipamento lacrado após utilização. Após reposição, deve ser lacrado novamente. | <em>* Rodear a quantidade correspondente</em></p>
     </div>
@@ -163,7 +154,7 @@
             }
 
             // Carregar os dados do Firebase e adicionar à tabela
-            const categorias = ['cabine-conducao-body', 'celula-sanitaria-body', 'saco-abordagem-body', 'saco-trauma-body', 'saco-pediatrico-body'];
+            const categorias = ['cabine-conducao-body', 'saco-abordagem-body', 'saco-trauma-body', 'saco-pediatrico-body'];
             categorias.forEach(categoria => {
                 const tbody = document.getElementById(categoria);
                 const ref = database.ref(categoria);
