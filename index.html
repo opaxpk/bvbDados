@@ -183,7 +183,7 @@
             <tbody id="saco-trauma-body"></tbody>
         </table>
 
-        <h2>Saco Pediátrico Lacre</h2>
+        <h2>Saco Pediátrico ℗ Lacre</h2>
         <table class="amarelo">
             <thead>
                 <tr>
@@ -207,9 +207,9 @@
             <input type="text" id="itemName" placeholder="Nome do Item">
             <input type="number" id="itemQuantity" placeholder="Quantidade">
             <button class="btn-add" onclick="addItem()">Adicionar Item</button>
-            <button class="btn-lacre" onclick="alternarLacre()">Lacre</button>
-            <button class="btn-reposicao" onclick="alternarReposicao()">(*R)</button>
-            <button class="btn-pediatra" onclick="alternarPediatra()">℗</button>
+            <button class="btn-lacre" onclick="alternarEtiqueta(' (Lacre)')">Lacre</button>
+            <button class="btn-reposicao" onclick="alternarEtiqueta(' (*R)')">(*R)</button>
+            <button class="btn-pediatra" onclick="alternarEtiqueta(' ℗')">℗</button>
         </div>
     </div>
 
@@ -322,60 +322,25 @@
                 });
         }
 
-        function alternarLacre() {
+        function alternarEtiqueta(etiqueta) {
             const categoria = document.getElementById('categoria').value;
-            const nomeItem = prompt('Digite o nome exato do item para alternar (Lacre):');
+            const nomeItem = prompt(`Digite o nome exato do item para alternar ${etiqueta}:`);
             if (nomeItem) {
                 const ref = database.ref(categoria);
                 ref.orderByChild('nome').once('value', function(snapshot) {
                     snapshot.forEach(function(childSnapshot) {
                         const itemRef = childSnapshot.ref;
                         const nomeAtual = childSnapshot.val().nome;
-                        const novoNome = nomeAtual.includes(' (Lacre)') ? nomeAtual.replace(' (Lacre)', '') : nomeAtual + ' (Lacre)';
-                        if (nomeAtual.includes(nomeItem)) {
-                            itemRef.update({ nome: novoNome })
-                                .then(() => alert(`Item atualizado para: ${novoNome}`))
-                                .catch(error => console.error('Erro ao atualizar (Lacre):', error));
+                        let novoNome;
+                        if (nomeAtual.endsWith(etiqueta)) {
+                            novoNome = nomeAtual.replace(etiqueta, '');
+                        } else {
+                            novoNome = nomeAtual + etiqueta;
                         }
-                    });
-                });
-            }
-        }
-
-        function alternarReposicao() {
-            const categoria = document.getElementById('categoria').value;
-            const nomeItem = prompt('Digite o nome exato do item para alternar (*R):');
-            if (nomeItem) {
-                const ref = database.ref(categoria);
-                ref.orderByChild('nome').once('value', function(snapshot) {
-                    snapshot.forEach(function(childSnapshot) {
-                        const itemRef = childSnapshot.ref;
-                        const nomeAtual = childSnapshot.val().nome;
-                        const novoNome = nomeAtual.includes(' (*R)') ? nomeAtual.replace(' (*R)', '') : nomeAtual + ' (*R)';
                         if (nomeAtual.includes(nomeItem)) {
                             itemRef.update({ nome: novoNome })
                                 .then(() => alert(`Item atualizado para: ${novoNome}`))
-                                .catch(error => console.error('Erro ao atualizar (*R):', error));
-                        }
-                    });
-                });
-            }
-        }
-
-        function alternarPediatra() {
-            const categoria = document.getElementById('categoria').value;
-            const nomeItem = prompt('Digite o nome exato do item para alternar (℗):');
-            if (nomeItem) {
-                const ref = database.ref(categoria);
-                ref.orderByChild('nome').once('value', function(snapshot) {
-                    snapshot.forEach(function(childSnapshot) {
-                        const itemRef = childSnapshot.ref;
-                        const nomeAtual = childSnapshot.val().nome;
-                        const novoNome = nomeAtual.includes(' ℗') ? nomeAtual.replace(' ℗', '') : nomeAtual + ' ℗';
-                        if (nomeAtual.includes(nomeItem)) {
-                            itemRef.update({ nome: novoNome })
-                                .then(() => alert(`Item atualizado para: ${novoNome}`))
-                                .catch(error => console.error('Erro ao atualizar (℗):', error));
+                                .catch(error => console.error(`Erro ao atualizar ${etiqueta}:`, error));
                         }
                     });
                 });
