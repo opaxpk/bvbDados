@@ -157,7 +157,7 @@
     <div class="conteudo">
         <h1>Base de Dados</h1>
 
-         <div class="admin-actions">
+        <div class="admin-actions">
             <select id="categoria">
                 <option value="cabine-conducao-body">Cabine de Condução</option>
                 <option value="saco-abordagem-body">Saco de Abordagem à Vítima</option>
@@ -170,7 +170,6 @@
             <button class="btn-lacre" onclick="alternarEtiqueta(' (Lacre)')">Lacre</button>
             <button class="btn-reposicao" onclick="alternarEtiqueta(' (*R)')">(*R)</button>
             <button class="btn-pediatra" onclick="alternarEtiqueta(' ℗')">℗</button>
-
         </div>
 
         <h2>Cabine de Condução</h2>
@@ -228,8 +227,6 @@
             </thead>
             <tbody id="saco-pediatrico-body"></tbody>
         </table>
-
-       
     </div>
 
     <div class="legenda">
@@ -374,7 +371,12 @@
 
         // Alternar etiquetas (Lacre, (*R), ℗)
         function alternarEtiqueta(etiqueta) {
-            alert(`Etiqueta ${etiqueta} foi aplicada.`);
+            const nomeItems = document.querySelectorAll('td[contenteditable="true"]');
+            nomeItems.forEach(item => {
+                if (item.classList.contains('selected')) {
+                    item.textContent += etiqueta;
+                }
+            });
         }
     </script>
 </body>
