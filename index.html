@@ -280,6 +280,34 @@
             });
         };
 
+        // Função para adicionar item ao Firebase
+function addItem() {
+    const categoria = document.getElementById('categoria').value;
+    const itemName = document.getElementById('itemName').value.trim();
+    const itemQuantity = document.getElementById('itemQuantity').value;
+
+    if (itemName === '' || itemQuantity === '') {
+        alert('Preencha o nome e a quantidade do item.');
+        return;
+    }
+
+    const novoItemRef = database.ref(categoria).push();
+    novoItemRef.set({
+        nome: itemName,
+        quantidade: itemQuantity,
+        verificado: false,
+        repor: false
+    }).then(() => {
+        alert('Item adicionado com sucesso!');
+        document.getElementById('itemName').value = '';
+        document.getElementById('itemQuantity').value = '';
+    }).catch((error) => {
+        console.error('Erro ao adicionar item:', error);
+        alert('Erro ao adicionar item. Tente novamente.');
+    });
+}
+
+
         let celulaSelecionada = null;
 
         // Função para selecionar a célula
