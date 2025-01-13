@@ -136,6 +136,21 @@
         .btn-lacre:hover, .btn-reposicao:hover, .btn-pediatra:hover {
             background-color: darkorange;
         }
+
+        .btn-quantidade {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            cursor: pointer;
+            border-radius: 5px;
+            margin: 2px;
+        }
+
+        .btn-quantidade:hover {
+            background-color: #45a049;
+        }
+
     </style>
 </head>
 <body>
@@ -218,7 +233,7 @@
     </div>
 
     <div class="legenda">
-        <p><strong>QN</strong> - Quantidade Normal | <strong>(*R)</strong> - Material Extra de Reposição | <strong>℗</strong> - Pediatra | <strong>LACRE</strong> - Equipamento lacrado após utilização. Após reposição, deve ser lacrado novamente.</p>
+        <p><strong>QN</strong> - Quantidade Normal | <strong>(*R)</strong> - Material Extra de Reposição | <strong>℗</strong> - Pediatra | <strong>LACRE</strong> - Equipamento lacrado após utilização. Após reposição, deve ser lacrado novamente. | <em>* Escolher a Quantidade: 50-100  / 100-200 / 200</em></p>
     </div>
 
     <script>
@@ -257,7 +272,7 @@
                     const data = snapshot.val();
                     const row = document.createElement('tr');
                     row.setAttribute('data-id', snapshot.key); // Atribuir um ID único para cada linha
-                    row.innerHTML = `<td>${data.nome}</td>
+                    row.innerHTML = `<td contenteditable='true' onblur='updateName("${snapshot.key}", "${categoria}", this.textContent)'>${data.nome}</td>
                                      <td contenteditable='true' onblur='updateItem("${snapshot.key}", "${categoria}", "quantidade", this.textContent)'>${data.quantidade}</td>
                                      <td><input type='checkbox' ${data.verificado ? 'checked' : ''} onclick='updateItem("${snapshot.key}", "${categoria}", "verificado", this.checked)'></td>
                                      <td><input type='checkbox' ${data.repor ? 'checked' : ''} onclick='updateItem("${snapshot.key}", "${categoria}", "repor", this.checked)'></td>
@@ -267,30 +282,40 @@
             });
         };
 
+        // Função para adicionar item no Firebase
         function addItem() {
             const categoria = document.getElementById('categoria').value;
-            const nome = document.getElementById('itemName').value;
-            if (nome) {
-                const ref = database.ref(categoria);
-                ref.orderByChild('nome').equalTo(nome).once('value', function(snapshot) {
-                    if (snapshot.exists()) {
-                        alert(`O item "${nome}" já existe.`);
-                    } else {
-                        const novoItemRef = ref.push();
-                        novoItemRef.set({
-                            nome: nome,
-                            quantidade: 'Não definido'
-                        }).then(() => {
-                            alert(`Item "${nome}" adicionado com sucesso!`);
-                        }).catch((error) => {
-                            console.error('Erro ao adicionar item:', error);
-                        });
-                    }
+            const itemName = document.getElementById('itemName').value;
+            const itemQuantity = document.getElementById('itemQuantity').value;
+
+            if (itemName && itemQuantity) {
+                const newItemRef = database.ref(categoria).push();
+                newItemRef.set({
+                    nome: itemName,
+                    quantidade: itemQuantity,
+                    verificado: false,
+                    repor: false
                 });
+                document.getElementById('itemName').value = '';
+                document.getElementById('itemQuantity').value = '';
             }
         }
 
-        // Função para atualizar o item no Firebase
+        // Função para atualizar o nome no Firebase
+        function updateName(id, categoria, novoNome) {
+            if (novoNome.trim() !== "") {
+                const itemRef = database.ref(`${categoria}/${id}`);
+                itemRef.update({ nome: novoNome })
+                    .then(() => {
+                        console.log('Nome atualizado com sucesso!');
+                    })
+                    .catch((error) => {
+                        console.error('Erro ao atualizar nome: ', error);
+                    });
+            }
+        }
+
+        // Função para atualizar outros campos
         function updateItem(id, categoria, campo, valor) {
             const itemRef = database.ref(`${categoria}/${id}`);
             const updates = {};
@@ -304,7 +329,7 @@
                 });
         }
 
-        // Função para remover o item do Firebase
+        // Função para remover item do Firebase
         function removeItem(id, categoria) {
             const itemRef = database.ref(`${categoria}/${id}`);
             itemRef.remove()
@@ -321,29 +346,9 @@
                 });
         }
 
+        // Alternar etiquetas (Lacre, (*R), ℗)
         function alternarEtiqueta(etiqueta) {
-            const categoria = document.getElementById('categoria').value;
-            const nomeItem = prompt(`Digite o nome exato do item para alternar ${etiqueta}:`);
-            if (nomeItem) {
-                const ref = database.ref(categoria);
-                ref.orderByChild('nome').once('value', function(snapshot) {
-                    snapshot.forEach(function(childSnapshot) {
-                        const itemRef = childSnapshot.ref;
-                        const nomeAtual = childSnapshot.val().nome;
-                        let novoNome;
-                        if (nomeAtual.endsWith(etiqueta)) {
-                            novoNome = nomeAtual.replace(etiqueta, '');
-                        } else {
-                            novoNome = nomeAtual + etiqueta;
-                        }
-                        if (nomeAtual.includes(nomeItem)) {
-                            itemRef.update({ nome: novoNome })
-                                .then(() => alert(`Item atualizado para: ${novoNome}`))
-                                .catch(error => console.error(`Erro ao atualizar ${etiqueta}:`, error));
-                        }
-                    });
-                });
-            }
+            alert(`Etiqueta ${etiqueta} foi aplicada.`);
         }
     </script>
 </body>
