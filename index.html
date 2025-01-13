@@ -110,6 +110,19 @@
             }
         }
 
+        .btn-lacre {
+            background-color: orange;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+
+        .btn-lacre:hover {
+            background-color: darkorange;
+        }
+
     </style>
 </head>
 <body>
@@ -181,6 +194,7 @@
             <input type="text" id="itemName" placeholder="Nome do Item">
             <input type="number" id="itemQuantity" placeholder="Quantidade">
             <button onclick="addItem()">Adicionar Item</button>
+            <button class="btn-lacre" onclick="marcarLacre()">Lacre</button>
         </div>
     </div>
 
@@ -291,6 +305,26 @@
                 .catch((error) => {
                     console.error('Erro ao remover item do Firebase: ', error);
                 });
+        }
+
+        function marcarLacre() {
+            const categoria = document.getElementById('categoria').value;
+            const nomeItem = prompt('Digite o nome exato do item para marcar como (Lacre):');
+            if (nomeItem) {
+                const ref = database.ref(categoria);
+                ref.orderByChild('nome').equalTo(nomeItem).once('value', function(snapshot) {
+                    if (snapshot.exists()) {
+                        snapshot.forEach(function(childSnapshot) {
+                            const itemRef = childSnapshot.ref;
+                            itemRef.update({ nome: nomeItem + ' (Lacre)' })
+                                .then(() => alert('Item marcado como (Lacre)!'))
+                                .catch(error => console.error('Erro ao marcar lacre:', error));
+                        });
+                    } else {
+                        alert('Item não encontrado!');
+                    }
+                });
+            }
         }
     </script>
 </body>
