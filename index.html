@@ -171,6 +171,12 @@
             <button class="btn-reposicao" onclick="alternarEtiqueta(' (*R)')">(*R)</button>
             <button class="btn-pediatra" onclick="alternarEtiqueta(' ℗')">℗</button>
 
+            <div>
+                <h2>Legenda:</h2>
+                <h3>50-100  / 100-200 / 200</h3>
+            </div>
+            
+
             <div id="quantidade-opcoes"></div>
 
         </div>
@@ -384,21 +390,6 @@
                 });
             });
         }
-
-        function carregarItens() {
-            const categorias = ['cabine-conducao-body', 'saco-abordagem-body', 'saco-trauma-body', 'saco-pediatrico-body'];
-            categorias.forEach(categoria => {
-                const ref = database.ref(categoria);
-                ref.once('value', function(snapshot) {
-                    snapshot.forEach(function(childSnapshot) {
-                        const item = childSnapshot.val();
-                        gerarBotoesQuantidade(item.nome, categoria);
-                    });
-                });
-            });
-        }
-
-        window.onload = carregarItens;
     </script>
 </body>
 </html>
