@@ -280,33 +280,49 @@
             });
         };
 
-        // Função para adicionar item ao Firebase
-function addItem() {
-    const categoria = document.getElementById('categoria').value;
-    const itemName = document.getElementById('itemName').value.trim();
-    const itemQuantity = document.getElementById('itemQuantity').value;
+        // Função para adicionar item no Firebase
+        function addItem() {
+            const categoria = document.getElementById('categoria').value;
+            const itemName = document.getElementById('itemName').value;
+            const itemQuantity = document.getElementById('itemQuantity').value;
 
-    if (itemName === '' || itemQuantity === '') {
-        alert('Preencha o nome e a quantidade do item.');
-        return;
-    }
+            if (itemName && itemQuantity) {
+                const newItemRef = database.ref(categoria).push();
+                newItemRef.set({
+                    nome: itemName,
+                    quantidade: itemQuantity,
+                    verificado: false,
+                    repor: false
+                }).then(() => {
+                    showPopup('Item adicionado com sucesso!', 'green');
+                }).catch(error => {
+                    showPopup('Erro ao adicionar item.', 'red');
+                    console.error('Erro ao adicionar item: ', error);
+                });
+                document.getElementById('itemName').value = '';
+                document.getElementById('itemQuantity').value = '';
+            } else {
+                showPopup('Por favor, preencha todos os campos.', 'yellow');
+            }
+        }
 
-    const novoItemRef = database.ref(categoria).push();
-    novoItemRef.set({
-        nome: itemName,
-        quantidade: itemQuantity,
-        verificado: false,
-        repor: false
-    }).then(() => {
-        alert('Item adicionado com sucesso!');
-        document.getElementById('itemName').value = '';
-        document.getElementById('itemQuantity').value = '';
-    }).catch((error) => {
-        console.error('Erro ao adicionar item:', error);
-        alert('Erro ao adicionar item. Tente novamente.');
-    });
-}
-
+        // Função para mostrar o popup de sucesso ou erro
+        function showPopup(message, color) {
+            const popup = document.createElement('div');
+            popup.textContent = message;
+            popup.style.backgroundColor = color;
+            popup.style.color = 'black';
+            popup.style.padding = '10px';
+            popup.style.textAlign = 'center';
+            popup.style.position = 'fixed';
+            popup.style.top = '10px';
+            popup.style.width = '100%';
+            popup.style.zIndex = '1000';
+            document.body.appendChild(popup);
+            setTimeout(() => {
+                popup.remove();
+            }, 3000);
+        }
 
         let celulaSelecionada = null;
 
