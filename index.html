@@ -132,12 +132,13 @@
         </div>
     </div>
     <div class="legenda">
-        <p><strong>QN</strong> - Quantidade Normal | <strong>(*R)</strong> - Material Extra de Reposição | <strong>LACRE</strong> - Equipamento lacrado após utilização. Após reposição, deve ser lacrado novamente. | <em>* Rodear a quantidade correspondente</em></p>
+        <p><strong>QN</strong> - Quantidade Normal | <strong>(*R)</strong> - Material Extra de Reposição | <strong>℗</strong> - Pediatria | <strong>LACRE</strong> - Equipamento lacrado após utilização. Após reposição, deve ser lacrado novamente. | <em>* Rodear a quantidade correspondente</em></p>
     </div>
+
     <script>
         // Configuração do Firebase
-        const firebaseConfig = {
-            aapiKey: "AIzaSyCONI5jggdZmpWU6XyExDUILRwb6PZ3ww8",
+        var firebaseConfig = {
+            apiKey: "AIzaSyCONI5jggdZmpWU6XyExDUILRwb6PZ3ww8",
             authDomain: "bvbdados.firebaseapp.com",
             databaseURL: "https://bvbdados-default-rtdb.europe-west1.firebasedatabase.app",
             projectId: "bvbdados",
@@ -146,34 +147,9 @@
             appId: "1:1023617367181:web:1278c64ceefb14e2ff76c4",
             measurementId: "G-TYSGD43C72"
         };
-
         // Inicializa o Firebase
         firebase.initializeApp(firebaseConfig);
-
-        // Função para carregar itens da checklist
-        function loadChecklist() {
-            const checklistRef = firebase.database().ref('checklist');
-            checklistRef.on('value', (snapshot) => {
-                const data = snapshot.val();
-                const checklistBody = document.getElementById('checklistBody');
-                checklistBody.innerHTML = '';
-                for (const key in data) {
-                    const item = data[key];
-                    const row = document.createElement('tr');
-                    row.innerHTML = `
-                        <td>${item.name}</td>
-                        <td>${item.quantity}</td>
-                        <td><input type="checkbox" ${item.checked ? 'checked' : ''} onchange="updateItem('${key}', 'checked', this.checked)"></td>
-                        <td><input type="checkbox" ${item.restock ? 'checked' : ''} onchange="updateItem('${key}', 'restock', this.checked)"></td>
-                        <td>
-                            ${isAdmin ? `<button onclick="removeItem('${key}')">Remover</button>` : ''}
-                        </td>
-                    `;
-                    checklistBody.appendChild(row);
-                }
-            });
-        }
-        
+        var database = firebase.database();
 
         window.onload = function() {
             const isAdmin = window.location.search.includes('admin=true');
@@ -181,17 +157,57 @@
                 document.querySelectorAll('.acoes').forEach(coluna => coluna.style.display = 'table-cell');
                 document.querySelector('.admin-actions').style.display = 'block';
             }
+
+            // Carregar os dados do Firebase e adicionar à tabela
+            const categorias = ['cabine-conducao-body', 'celula-sanitaria-body', 'saco-abordagem-body', 'saco-trauma-body', 'saco-pediatrico-body'];
+            categorias.forEach(categoria => {
+                const tbody = document.getElementById(categoria);
+                const ref = database.ref(categoria);
+                ref.on('child_added', (snapshot) => {
+                    const data = snapshot.val();
+                    const row = document.createElement('tr');
+                    row.innerHTML = `<td>${data.nome}</td><td contenteditable='true'>${data.quantidade}</td><td><input type='checkbox' ${data.verificado ? 'checked' : ''}></td><td><input type='checkbox' ${data.repor ? 'checked' : ''}></td><td><button class='btn-remover' onclick='removeItem("${snapshot.key}", "${categoria}")'>Remover</button></td>`;
+                    tbody.appendChild(row);
+                });
+            });
         };
+
         function addItem() {
             const categoria = document.getElementById('categoria').value;
             const nome = document.getElementById('itemName').value;
             const quantidade = document.getElementById('itemQuantity').value;
             if (nome && quantidade) {
+                // Enviar dados para o Firebase
+                const novoItemRef = database.ref(categoria).push();
+                novoItemRef.set({
+                    nome: nome,
+                    quantidade: quantidade,
+                    verificado: false,
+                    repor: false
+                }).then(() => {
+                    console.log('Item adicionado com sucesso no Firebase!');
+                }).catch((error) => {
+                    console.error('Erro ao adicionar item no Firebase: ', error);
+                });
+
+                // Adicionar item na tabela
                 const tbody = document.getElementById(categoria);
                 const row = document.createElement('tr');
                 row.innerHTML = `<td>${nome}</td><td contenteditable='true'>${quantidade}</td><td><input type='checkbox'></td><td><input type='checkbox'></td><td><button class='btn-remover' onclick='this.parentElement.parentElement.remove()'>Remover</button></td>`;
                 tbody.appendChild(row);
             }
+        }
+
+        // Função para remover o item da base de dados
+        function removeItem(id, categoria) {
+            const itemRef = database.ref(`${categoria}/${id}`);
+            itemRef.remove()
+                .then(() => {
+                    console.log('Item removido com sucesso do Firebase!');
+                })
+                .catch((error) => {
+                    console.error('Erro ao remover item do Firebase: ', error);
+                });
         }
     </script>
 </body>
