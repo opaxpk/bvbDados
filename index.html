@@ -136,21 +136,6 @@
         .btn-lacre:hover, .btn-reposicao:hover, .btn-pediatra:hover {
             background-color: darkorange;
         }
-
-        .btn-quantidade {
-            background-color: #4CAF50;
-            color: white;
-            border: none;
-            padding: 5px 10px;
-            cursor: pointer;
-            border-radius: 5px;
-            margin: 2px;
-        }
-
-        .btn-quantidade:hover {
-            background-color: #45a049;
-        }
-
     </style>
 </head>
 <body>
@@ -170,8 +155,6 @@
             <button class="btn-lacre" onclick="alternarEtiqueta(' (Lacre)')">Lacre</button>
             <button class="btn-reposicao" onclick="alternarEtiqueta(' (*R)')">(*R)</button>
             <button class="btn-pediatra" onclick="alternarEtiqueta(' ℗')">℗</button>
-
-            <div id="quantidade-opcoes"></div>
 
         </div>
 
@@ -235,7 +218,7 @@
     </div>
 
     <div class="legenda">
-        <p><strong>QN</strong> - Quantidade Normal | <strong>(*R)</strong> - Material Extra de Reposição | <strong>℗</strong> - Pediatra | <strong>LACRE</strong> - Equipamento lacrado após utilização. Após reposição, deve ser lacrado novamente. | <em>* Escolher a Quantidade: 50-100  / 100-200 / 200</em></p>
+        <p><strong>QN</strong> - Quantidade Normal | <strong>(*R)</strong> - Material Extra de Reposição | <strong>℗</strong> - Pediatra | <strong>LACRE</strong> - Equipamento lacrado após utilização. Após reposição, deve ser lacrado novamente.</p>
     </div>
 
     <script>
@@ -298,7 +281,6 @@
                             nome: nome,
                             quantidade: 'Não definido'
                         }).then(() => {
-                            gerarBotoesQuantidade(nome, categoria);
                             alert(`Item "${nome}" adicionado com sucesso!`);
                         }).catch((error) => {
                             console.error('Erro ao adicionar item:', error);
@@ -362,27 +344,6 @@
                     });
                 });
             }
-        }
-
-        function gerarBotoesQuantidade(nome, categoria) {
-            const divOpcoes = document.getElementById('quantidade-opcoes');
-            const container = document.createElement('div');
-            container.innerHTML = `<h3>${nome}</h3>
-                <button class='btn-quantidade' onclick="atualizarQuantidade('${nome}', '${categoria}', '50-100')">50-100</button>
-                <button class='btn-quantidade' onclick="atualizarQuantidade('${nome}', '${categoria}', '100-200')">100-200</button>
-                <button class='btn-quantidade' onclick="atualizarQuantidade('${nome}', '${categoria}', '200+')">200+</button>`;
-            divOpcoes.appendChild(container);
-        }
-
-        function atualizarQuantidade(nome, categoria, faixa) {
-            const ref = database.ref(categoria);
-            ref.orderByChild('nome').equalTo(nome).once('value', function(snapshot) {
-                snapshot.forEach(function(childSnapshot) {
-                    childSnapshot.ref.update({ quantidade: faixa })
-                        .then(() => alert(`Quantidade de "${nome}" atualizada para: ${faixa}`))
-                        .catch(error => console.error('Erro ao atualizar quantidade:', error));
-                });
-            });
         }
     </script>
 </body>
