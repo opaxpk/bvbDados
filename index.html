@@ -289,15 +289,21 @@
             const nome = document.getElementById('itemName').value;
             if (nome) {
                 const ref = database.ref(categoria);
-                const novoItemRef = ref.push();
-                novoItemRef.set({
-                    nome: nome,
-                    quantidade: 'Não definido'
-                }).then(() => {
-                    gerarBotoesQuantidade(nome, categoria);
-                    alert(`Item "${nome}" adicionado com sucesso!`);
-                }).catch((error) => {
-                    console.error('Erro ao adicionar item:', error);
+                ref.orderByChild('nome').equalTo(nome).once('value', function(snapshot) {
+                    if (snapshot.exists()) {
+                        alert(`O item "${nome}" já existe.`);
+                    } else {
+                        const novoItemRef = ref.push();
+                        novoItemRef.set({
+                            nome: nome,
+                            quantidade: 'Não definido'
+                        }).then(() => {
+                            gerarBotoesQuantidade(nome, categoria);
+                            alert(`Item "${nome}" adicionado com sucesso!`);
+                        }).catch((error) => {
+                            console.error('Erro ao adicionar item:', error);
+                        });
+                    }
                 });
             }
         }
