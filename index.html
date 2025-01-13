@@ -207,8 +207,8 @@
             <input type="text" id="itemName" placeholder="Nome do Item">
             <input type="number" id="itemQuantity" placeholder="Quantidade">
             <button class="btn-add" onclick="addItem()">Adicionar Item</button>
-            <button class="btn-lacre" onclick="marcarLacre()">Lacre</button>
-            <button class="btn-reposicao" onclick="marcarReposicao()">(*R)</button>
+            <button class="btn-lacre" onclick="alternarLacre()">Lacre</button>
+            <button class="btn-reposicao" onclick="alternarReposicao()">(*R)</button>
         </div>
     </div>
 
@@ -321,42 +321,42 @@
                 });
         }
 
-        function marcarLacre() {
+        function alternarLacre() {
             const categoria = document.getElementById('categoria').value;
-            const nomeItem = prompt('Digite o nome exato do item para marcar como (Lacre):');
+            const nomeItem = prompt('Digite o nome exato do item para alternar (Lacre):');
             if (nomeItem) {
                 const ref = database.ref(categoria);
-                ref.orderByChild('nome').equalTo(nomeItem).once('value', function(snapshot) {
-                    if (snapshot.exists()) {
-                        snapshot.forEach(function(childSnapshot) {
-                            const itemRef = childSnapshot.ref;
-                            itemRef.update({ nome: nomeItem + ' (Lacre)' })
-                                .then(() => alert('Item marcado como (Lacre)!'))
-                                .catch(error => console.error('Erro ao marcar lacre:', error));
-                        });
-                    } else {
-                        alert('Item não encontrado!');
-                    }
+                ref.orderByChild('nome').once('value', function(snapshot) {
+                    snapshot.forEach(function(childSnapshot) {
+                        const itemRef = childSnapshot.ref;
+                        const nomeAtual = childSnapshot.val().nome;
+                        const novoNome = nomeAtual.includes(' (Lacre)') ? nomeAtual.replace(' (Lacre)', '') : nomeAtual + ' (Lacre)';
+                        if (nomeAtual.includes(nomeItem)) {
+                            itemRef.update({ nome: novoNome })
+                                .then(() => alert(`Item atualizado para: ${novoNome}`))
+                                .catch(error => console.error('Erro ao atualizar (Lacre):', error));
+                        }
+                    });
                 });
             }
         }
 
-        function marcarReposicao() {
+        function alternarReposicao() {
             const categoria = document.getElementById('categoria').value;
-            const nomeItem = prompt('Digite o nome exato do item para marcar como (*R):');
+            const nomeItem = prompt('Digite o nome exato do item para alternar (*R):');
             if (nomeItem) {
                 const ref = database.ref(categoria);
-                ref.orderByChild('nome').equalTo(nomeItem).once('value', function(snapshot) {
-                    if (snapshot.exists()) {
-                        snapshot.forEach(function(childSnapshot) {
-                            const itemRef = childSnapshot.ref;
-                            itemRef.update({ nome: nomeItem + ' (*R)' })
-                                .then(() => alert('Item marcado como (*R)!'))
-                                .catch(error => console.error('Erro ao marcar (*R):', error));
-                        });
-                    } else {
-                        alert('Item não encontrado!');
-                    }
+                ref.orderByChild('nome').once('value', function(snapshot) {
+                    snapshot.forEach(function(childSnapshot) {
+                        const itemRef = childSnapshot.ref;
+                        const nomeAtual = childSnapshot.val().nome;
+                        const novoNome = nomeAtual.includes(' (*R)') ? nomeAtual.replace(' (*R)', '') : nomeAtual + ' (*R)';
+                        if (nomeAtual.includes(nomeItem)) {
+                            itemRef.update({ nome: novoNome })
+                                .then(() => alert(`Item atualizado para: ${novoNome}`))
+                                .catch(error => console.error('Erro ao atualizar (*R):', error));
+                        }
+                    });
                 });
             }
         }
