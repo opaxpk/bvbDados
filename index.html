@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BV Barcelinhos Dados</title>
+    <title>Checklist Dividida com Admin</title>
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
     <style>
@@ -67,18 +67,6 @@
             <tbody id="cabine-conducao-body"></tbody>
         </table>
         <h2>Célula Sanitária</h2>
-        <table class="cinza">
-            <thead>
-                <tr>
-                    <th>Nome</th>
-                    <th>Quantidade</th>
-                    <th>Verificado</th>
-                    <th>Repor</th>
-                    <th class="acoes">Ações</th>
-                </tr>
-            </thead>
-            <tbody id="celula-sanitaria-body"></tbody>
-        </table>
         <h3>Saco de Abordagem à Vítima</h3>
         <table class="azul">
             <thead>
@@ -160,7 +148,6 @@
                 document.querySelector('.admin-actions').style.display = 'block';
             } else {
                 document.querySelectorAll('.acoes').forEach(coluna => coluna.style.display = 'none');
-                document.querySelectorAll('.btn-remover').forEach(btn => btn.style.display = 'none');
             }
 
             // Carregar os dados do Firebase e adicionar à tabela
@@ -171,7 +158,7 @@
                 ref.on('child_added', (snapshot) => {
                     const data = snapshot.val();
                     const row = document.createElement('tr');
-                    row.innerHTML = `<td>${data.nome}</td><td contenteditable='true'>${data.quantidade}</td><td><input type='checkbox' ${data.verificado ? 'checked' : ''}></td><td><input type='checkbox' ${data.repor ? 'checked' : ''}></td><td><button class='btn-remover' onclick='removeItem("${snapshot.key}", "${categoria}")'>Remover</button></td>`;
+                    row.innerHTML = `<td>${data.nome}</td><td contenteditable='true' onblur='updateItem("${snapshot.key}", "${categoria}", "quantidade", this.textContent)'>${data.quantidade}</td><td><input type='checkbox' ${data.verificado ? 'checked' : ''} onclick='updateItem("${snapshot.key}", "${categoria}", "verificado", this.checked)'></td><td><input type='checkbox' ${data.repor ? 'checked' : ''} onclick='updateItem("${snapshot.key}", "${categoria}", "repor", this.checked)'></td><td><button class='btn-remover' onclick='removeItem("${snapshot.key}", "${categoria}")'>Remover</button></td>`;
                     tbody.appendChild(row);
                 });
             });
@@ -194,16 +181,24 @@
                 }).catch((error) => {
                     console.error('Erro ao adicionar item no Firebase: ', error);
                 });
-
-                // Adicionar item na tabela
-                const tbody = document.getElementById(categoria);
-                const row = document.createElement('tr');
-                row.innerHTML = `<td>${nome}</td><td contenteditable='true'>${quantidade}</td><td><input type='checkbox'></td><td><input type='checkbox'></td><td><button class='btn-remover' onclick='this.parentElement.parentElement.remove()'>Remover</button></td>`;
-                tbody.appendChild(row);
             }
         }
 
-        // Função para remover o item da base de dados
+        // Função para atualizar o item no Firebase
+        function updateItem(id, categoria, campo, valor) {
+            const itemRef = database.ref(`${categoria}/${id}`);
+            const updates = {};
+            updates[campo] = valor;
+            itemRef.update(updates)
+                .then(() => {
+                    console.log(`${campo} atualizado com sucesso!`);
+                })
+                .catch((error) => {
+                    console.error(`Erro ao atualizar ${campo}: `, error);
+                });
+        }
+
+        // Função para remover o item do Firebase
         function removeItem(id, categoria) {
             const itemRef = database.ref(`${categoria}/${id}`);
             itemRef.remove()
