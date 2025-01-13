@@ -110,7 +110,20 @@
             }
         }
 
-        .btn-lacre {
+        .btn-add{
+            background-color: green;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+
+        .btn-add:hover{
+            background-color: darkgreen;
+        }
+
+        .btn-lacre, .btn-reposicao {
             background-color: orange;
             color: white;
             border: none;
@@ -119,7 +132,7 @@
             border-radius: 5px;
         }
 
-        .btn-lacre:hover {
+        .btn-lacre:hover, .btn-reposicao:hover {
             background-color: darkorange;
         }
 
@@ -133,7 +146,7 @@
             <thead>
                 <tr>
                     <th>Nome</th>
-                    <th>Quantidade</th>
+                    <th>Quantidade(QN)</th>
                     <th>Verificado</th>
                     <th>Repor</th>
                     <th class="acoes">Ações</th>
@@ -147,7 +160,7 @@
             <thead>
                 <tr>
                     <th>Nome</th>
-                    <th>Quantidade</th>
+                    <th>Quantidade(QN)</th>
                     <th>Verificado</th>
                     <th>Repor</th>
                     <th class="acoes">Ações</th>
@@ -161,7 +174,7 @@
             <thead>
                 <tr>
                     <th>Nome</th>
-                    <th>Quantidade</th>
+                    <th>Quantidade(QN)</th>
                     <th>Verificado</th>
                     <th>Repor</th>
                     <th class="acoes">Ações</th>
@@ -175,7 +188,7 @@
             <thead>
                 <tr>
                     <th>Nome</th>
-                    <th>Quantidade</th>
+                    <th>Quantidade(QN)</th>
                     <th>Verificado</th>
                     <th>Repor</th>
                     <th class="acoes">Ações</th>
@@ -189,12 +202,13 @@
                 <option value="cabine-conducao-body">Cabine de Condução</option>
                 <option value="saco-abordagem-body">Saco de Abordagem à Vítima</option>
                 <option value="saco-trauma-body">Saco de Trauma</option>
-                <option value="saco-pediatrico-body">Saco Pediátrico Lacre</option>
+                <option value="saco-pediatrico-body">Saco Pediátrico ℗ Lacre</option>
             </select>
             <input type="text" id="itemName" placeholder="Nome do Item">
             <input type="number" id="itemQuantity" placeholder="Quantidade">
-            <button onclick="addItem()">Adicionar Item</button>
+            <button class="btn-add" onclick="addItem()">Adicionar Item</button>
             <button class="btn-lacre" onclick="marcarLacre()">Lacre</button>
+            <button class="btn-reposicao" onclick="marcarReposicao()">(*R)</button>
         </div>
     </div>
 
@@ -319,6 +333,26 @@
                             itemRef.update({ nome: nomeItem + ' (Lacre)' })
                                 .then(() => alert('Item marcado como (Lacre)!'))
                                 .catch(error => console.error('Erro ao marcar lacre:', error));
+                        });
+                    } else {
+                        alert('Item não encontrado!');
+                    }
+                });
+            }
+        }
+
+        function marcarReposicao() {
+            const categoria = document.getElementById('categoria').value;
+            const nomeItem = prompt('Digite o nome exato do item para marcar como (*R):');
+            if (nomeItem) {
+                const ref = database.ref(categoria);
+                ref.orderByChild('nome').equalTo(nomeItem).once('value', function(snapshot) {
+                    if (snapshot.exists()) {
+                        snapshot.forEach(function(childSnapshot) {
+                            const itemRef = childSnapshot.ref;
+                            itemRef.update({ nome: nomeItem + ' (*R)' })
+                                .then(() => alert('Item marcado como (*R)!'))
+                                .catch(error => console.error('Erro ao marcar (*R):', error));
                         });
                     } else {
                         alert('Item não encontrado!');
