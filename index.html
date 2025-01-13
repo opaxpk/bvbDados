@@ -15,6 +15,8 @@
             padding: 0;
             background-color: #f4f4f9;
         }
+
+        /* Estilos para a legenda */
         .legenda {
             width: 100%;
             position: sticky;
@@ -25,7 +27,7 @@
             font-size: 12px;
             text-align: center;
             z-index: 100;
-            }
+        }
 
         @media (max-width: 600px) {
             .legenda {
@@ -33,30 +35,81 @@
                 padding: 8px;
             }
         }
+
+        /* Estilos gerais para o conteúdo */
         .conteudo {
             margin-bottom: 100px;
             padding: 20px;
         }
+
         table {
             width: 100%;
             border-collapse: collapse;
             margin-bottom: 20px;
         }
+
         th, td {
             border: 1px solid #ddd;
             padding: 8px;
             text-align: center;
+            word-wrap: break-word;
         }
+
         th {
             background-color: #ccc;
         }
+
         .cinza { background-color: #d9d9d9; }
         .azul { background-color: #add8e6; }
         .verde { background-color: #90ee90; }
         .amarelo { background-color: #ffff99; }
-        .btn-remover { background-color: red; color: white; border: none; padding: 5px 10px; cursor: pointer; border-radius: 5px; }
-        .btn-remover:hover { background-color: darkred; }
-        .admin-actions { display: none; margin-top: 20px; }
+
+        .btn-remover {
+            background-color: red;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+
+        .btn-remover:hover {
+            background-color: darkred;
+        }
+
+        .admin-actions {
+            display: none;
+            margin-top: 20px;
+        }
+
+        /* Estilos para dispositivos móveis */
+        @media (max-width: 600px) {
+            h1, h2 {
+                font-size: 18px;
+            }
+
+            table {
+                font-size: 12px;
+            }
+
+            td, th {
+                padding: 6px;
+            }
+
+            .admin-actions {
+                width: 100%;
+                text-align: center;
+            }
+
+            .btn-remover {
+                padding: 3px 7px;
+            }
+
+            .conteudo {
+                padding: 10px;
+            }
+        }
+
     </style>
 </head>
 <body>
