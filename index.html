@@ -167,9 +167,9 @@
             <input type="text" id="itemName" placeholder="Nome do Item">
             <input type="number" id="itemQuantity" placeholder="Quantidade">
             <button class="btn-add" onclick="addItem()">Adicionar Item</button>
-            <button class="btn-lacre" onclick="alternarEtiqueta(' (Lacre)')">Lacre</button>
-            <button class="btn-reposicao" onclick="alternarEtiqueta(' (*R)')">(*R)</button>
-            <button class="btn-pediatra" onclick="alternarEtiqueta(' ℗')">℗</button>
+            <button class="btn-lacre" onclick="adicionarEtiqueta('(Lacre)')">Lacre</button>
+            <button class="btn-reposicao" onclick="adicionarEtiqueta('(*R)')">(*R)</button>
+            <button class="btn-pediatra" onclick="adicionarEtiqueta('℗')">℗</button>
         </div>
 
         <h2>Cabine de Condução</h2>
@@ -185,7 +185,7 @@
             </thead>
             <tbody id="cabine-conducao-body"></tbody>
         </table>
-        <h1>Célula Sanitária</h1>
+
         <h2>Saco de Abordagem à Vítima</h2>
         <table class="azul">
             <thead>
@@ -270,7 +270,7 @@
                     const data = snapshot.val();
                     const row = document.createElement('tr');
                     row.setAttribute('data-id', snapshot.key); // Atribuir um ID único para cada linha
-                    row.innerHTML = `<td contenteditable='true' onblur='updateName("${snapshot.key}", "${categoria}", this.textContent)'>${data.nome}</td>
+                    row.innerHTML = `<td contenteditable='true' onfocus='selecionarCelula(this)' onblur='updateName("${snapshot.key}", "${categoria}", this.textContent)'>${data.nome}</td>
                                      <td contenteditable='true' onblur='updateItem("${snapshot.key}", "${categoria}", "quantidade", this.textContent)'>${data.quantidade}</td>
                                      <td><input type='checkbox' ${data.verificado ? 'checked' : ''} onclick='updateItem("${snapshot.key}", "${categoria}", "verificado", this.checked)'></td>
                                      <td><input type='checkbox' ${data.repor ? 'checked' : ''} onclick='updateItem("${snapshot.key}", "${categoria}", "repor", this.checked)'></td>
@@ -280,48 +280,22 @@
             });
         };
 
-        // Função para adicionar item no Firebase
-        function addItem() {
-            const categoria = document.getElementById('categoria').value;
-            const itemName = document.getElementById('itemName').value;
-            const itemQuantity = document.getElementById('itemQuantity').value;
+        let celulaSelecionada = null;
 
-            if (itemName && itemQuantity) {
-                const newItemRef = database.ref(categoria).push();
-                newItemRef.set({
-                    nome: itemName,
-                    quantidade: itemQuantity,
-                    verificado: false,
-                    repor: false
-                }).then(() => {
-                    showPopup('Item adicionado com sucesso!', 'green');
-                }).catch(error => {
-                    showPopup('Erro ao adicionar item.', 'red');
-                    console.error('Erro ao adicionar item: ', error);
-                });
-                document.getElementById('itemName').value = '';
-                document.getElementById('itemQuantity').value = '';
-            } else {
-                showPopup('Por favor, preencha todos os campos.', 'yellow');
-            }
+        // Função para selecionar a célula
+        function selecionarCelula(celula) {
+            celulaSelecionada = celula;
         }
 
-        // Função para mostrar o popup de sucesso ou erro
-        function showPopup(message, color) {
-            const popup = document.createElement('div');
-            popup.textContent = message;
-            popup.style.backgroundColor = color;
-            popup.style.color = 'black';
-            popup.style.padding = '10px';
-            popup.style.textAlign = 'center';
-            popup.style.position = 'fixed';
-            popup.style.top = '10px';
-            popup.style.width = '100%';
-            popup.style.zIndex = '1000';
-            document.body.appendChild(popup);
-            setTimeout(() => {
-                popup.remove();
-            }, 3000);
+        // Função para adicionar etiqueta ao nome do item selecionado
+        function adicionarEtiqueta(etiqueta) {
+            if (celulaSelecionada) {
+                const nomeItem = celulaSelecionada.textContent;
+                // Verificar se a etiqueta já não foi adicionada
+                if (!nomeItem.includes(etiqueta)) {
+                    celulaSelecionada.textContent += etiqueta;
+                }
+            }
         }
 
         // Função para atualizar o nome no Firebase
@@ -367,16 +341,6 @@
                 .catch((error) => {
                     console.error('Erro ao remover item do Firebase: ', error);
                 });
-        }
-
-        // Alternar etiquetas (Lacre, (*R), ℗)
-        function alternarEtiqueta(etiqueta) {
-            const nomeItems = document.querySelectorAll('td[contenteditable="true"]');
-            nomeItems.forEach(item => {
-                if (item.classList.contains('selected')) {
-                    item.textContent += etiqueta;
-                }
-            });
         }
     </script>
 </body>
