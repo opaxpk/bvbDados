@@ -123,7 +123,7 @@
             background-color: darkgreen;
         }
 
-        .btn-lacre, .btn-reposicao {
+        .btn-lacre, .btn-reposicao, .btn-pediatra {
             background-color: orange;
             color: white;
             border: none;
@@ -132,7 +132,7 @@
             border-radius: 5px;
         }
 
-        .btn-lacre:hover, .btn-reposicao:hover {
+        .btn-lacre:hover, .btn-reposicao:hover, .btn-pediatra:hover {
             background-color: darkorange;
         }
 
@@ -209,6 +209,7 @@
             <button class="btn-add" onclick="addItem()">Adicionar Item</button>
             <button class="btn-lacre" onclick="alternarLacre()">Lacre</button>
             <button class="btn-reposicao" onclick="alternarReposicao()">(*R)</button>
+            <button class="btn-pediatra" onclick="alternarPediatra()">℗</button>
         </div>
     </div>
 
@@ -355,6 +356,26 @@
                             itemRef.update({ nome: novoNome })
                                 .then(() => alert(`Item atualizado para: ${novoNome}`))
                                 .catch(error => console.error('Erro ao atualizar (*R):', error));
+                        }
+                    });
+                });
+            }
+        }
+
+        function alternarPediatra() {
+            const categoria = document.getElementById('categoria').value;
+            const nomeItem = prompt('Digite o nome exato do item para alternar (℗):');
+            if (nomeItem) {
+                const ref = database.ref(categoria);
+                ref.orderByChild('nome').once('value', function(snapshot) {
+                    snapshot.forEach(function(childSnapshot) {
+                        const itemRef = childSnapshot.ref;
+                        const nomeAtual = childSnapshot.val().nome;
+                        const novoNome = nomeAtual.includes(' ℗') ? nomeAtual.replace(' ℗', '') : nomeAtual + ' ℗';
+                        if (nomeAtual.includes(nomeItem)) {
+                            itemRef.update({ nome: novoNome })
+                                .then(() => alert(`Item atualizado para: ${novoNome}`))
+                                .catch(error => console.error('Erro ao atualizar (℗):', error));
                         }
                     });
                 });
