@@ -68,7 +68,7 @@
                     verificado: false,
                     repor: false
                 }).then(() => {
-                    showPopup('Item adicionado com sucesso!!', 'success');
+                    showPopup('Item adicionado com sucesso!', 'success');
                 }).catch(error => {
                     showPopup('Erro ao adicionar item.', 'error');
                     console.error('Erro ao adicionar item: ', error);
@@ -76,7 +76,7 @@
                 document.getElementById('itemName').value = '';
                 document.getElementById('itemQuantity').value = '';
             } else {
-                showPopup('Por favor, preencha todos os campos!', 'warning');
+                showPopup('Por favor, preencha todos os campos.', 'warning');
             }
         }
 
