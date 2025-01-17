@@ -7,7 +7,7 @@
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
     <style>
-        /*
+        
         body {
             display: flex;
             flex-direction: column;
@@ -17,7 +17,7 @@
             background-color: #f4f4f9;
         }
 
-        Estilos para a legenda
+        /* Estilos para a legenda */
         .legenda {
             width: 100%;
             position: sticky;
@@ -37,7 +37,7 @@
             }
         }
 
-        Estilos gerais para o conteúdo 
+        /* Estilos gerais para o conteúdo */
         .conteudo {
             margin-bottom: 100px;
             padding: 20px;
@@ -81,10 +81,10 @@
         .admin-actions {
             display: none;
             margin-top: 20px;
-            margin-bottom: 20px;
+            animation: fadeIn 0.5s ease-out;
         }
 
-        Estilos para dispositivos móveis
+        /* Estilos para dispositivos móveis */
         @media (max-width: 600px) {
             h1, h2 {
                 font-size: 18px;
@@ -138,190 +138,46 @@
             background-color: darkorange;
         }
 
-        */
-
-        <style>
-    body {
-        display: flex;
-        flex-direction: column;
-        font-family: Arial, sans-serif;
-        margin: 0;
-        padding: 0;
-        background-color: #f4f4f9;
-    }
-
-    /* Estilos para a legenda */
-    .legenda {
-        width: 100%;
-        position: sticky;
-        bottom: 0;
-        background-color: #f0f0f0;
-        padding: 10px;
-        box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.1);
-        font-size: 12px;
-        text-align: center;
-        z-index: 100;
-    }
-
-    /* Estilos gerais para o conteúdo */
-    .conteudo {
-        margin-bottom: 100px;
-        padding: 20px;
-    }
-
-    table {
-        width: 100%;
-        border-collapse: collapse;
-        margin-bottom: 20px;
-    }
-
-    th, td {
-        border: 1px solid #ddd;
-        padding: 8px;
-        text-align: center;
-        word-wrap: break-word;
-    }
-
-    th {
-        background-color: #ccc;
-    }
-
-    .cinza { background-color: #d9d9d9; }
-    .azul { background-color: #add8e6; }
-    .verde { background-color: #90ee90; }
-    .amarelo { background-color: #ffff99; }
-
-    .btn-remover {
-        background-color: red;
-        color: white;
-        border: none;
-        padding: 5px 10px;
-        cursor: pointer;
-        border-radius: 5px;
-    }
-
-    .btn-remover:hover {
-        background-color: darkred;
-    }
-
-    .admin-actions {
-        display: none;
-        margin-top: 20px;
-        margin-bottom: 20px;
-        animation: fadeIn 0.5s ease-out;
-    }
-
-    .admin-actions select, .admin-actions input {
-        width: 100%;
-        padding: 10px;
-        margin-bottom: 10px;
-        border: 1px solid #ddd;
-        border-radius: 5px;
-        font-size: 16px;
-        outline: none;
-        background-color: #fff;
-        transition: all 0.3s ease;
-    }
-
-    .admin-actions select:focus, .admin-actions input:focus {
-        border-color: #4CAF50;
-        box-shadow: 0 0 5px rgba(76, 175, 80, 0.7);
-    }
-
-    .admin-actions button {
-        background-color: #4CAF50;
-        color: white;
-        border: none;
-        padding: 10px 15px;
-        cursor: pointer;
-        border-radius: 5px;
-        margin-top: 10px;
-        transition: background-color 0.3s ease;
-    }
-
-    .admin-actions button:hover {
-        background-color: darkgreen;
-    }
-
-    /* Animação para fade-in */
-    @keyframes fadeIn {
-        from {
-            opacity: 0;
-        }
-        to {
-            opacity: 1;
-        }
-    }
-
-    /* Estilos para dispositivos móveis */
-    @media (max-width: 600px) {
-        h1, h2 {
-            font-size: 18px;
-        }
-
-        table {
-            font-size: 12px;
-        }
-
-        td, th {
-            padding: 6px;
-        }
 
         .admin-actions {
-            width: 100%;
-            text-align: center;
+            display: none;
+            margin-top: 20px;
+            animation: fadeIn 0.5s ease-out;
         }
 
-        .btn-remover {
-            padding: 3px 7px;
-        }
-
-        .conteudo {
+        .admin-actions input, .admin-actions select {
             padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            width: 100%;
         }
-    }
 
-    .btn-add{
-        background-color: green;
-        color: white;
-        border: none;
-        padding: 5px 10px;
-        cursor: pointer;
-        border-radius: 5px;
-    }
+        .admin-actions button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            cursor: pointer;
+            border-radius: 5px;
+            width: 100%;
+        }
 
-    .btn-add:hover{
-        background-color: darkgreen;
-    }
+        .admin-actions button:hover {
+            background-color: darkgreen;
+        }
 
-    .btn-lacre, .btn-reposicao, .btn-pediatra {
-        background-color: orange;
-        color: white;
-        border: none;
-        padding: 5px 10px;
-        cursor: pointer;
-        border-radius: 5px;
-    }
+        /* Animação de fade-in */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
 
-    .btn-lacre:hover, .btn-reposicao:hover, .btn-pediatra:hover {
-        background-color: darkorange;
-    }
-
-    .btn-quantidade {
-        background-color: #4CAF50;
-        color: white;
-        border: none;
-        padding: 5px 10px;
-        cursor: pointer;
-        border-radius: 5px;
-        margin: 2px;
-    }
-
-    .btn-quantidade:hover {
-        background-color: #45a049;
-    }
-
-</style>
+    
 
 
     </style>
