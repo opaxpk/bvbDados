@@ -17,7 +17,6 @@
         }
 
         .admin-actions {
-            display: none;
             margin-top: 20px;
             margin-bottom: 20px;
             padding: 20px;
@@ -170,7 +169,7 @@
     <div class="conteudo">
         <h1>Base de Dados</h1>
 
-        <div class="admin-actions">
+        <div class="admin-actions" id="adminActions">
             <select id="categoria">
                 <option value="cabine-conducao-body">Cabine de Condução</option>
                 <option value="saco-abordagem-body">Saco de Abordagem à Vítima</option>
@@ -269,9 +268,10 @@
             // Mostrar ou esconder colunas de ações e admin actions
             if (isAdmin) {
                 document.querySelectorAll('.acoes').forEach(coluna => coluna.style.display = 'table-cell');
-                document.querySelector('.admin-actions').style.display = 'block';
+                document.getElementById('adminActions').style.display = 'flex'; // Mostrar a div admin-actions
             } else {
                 document.querySelectorAll('.acoes').forEach(coluna => coluna.style.display = 'none');
+                document.getElementById('adminActions').style.display = 'none'; // Esconder a div admin-actions
             }
 
             // Carregar os dados do Firebase e adicionar à tabela
@@ -399,8 +399,6 @@
                     console.error('Erro ao remover item do Firebase: ', error);
                 });
         }
-
-
     </script>
 </body>
 </html>
