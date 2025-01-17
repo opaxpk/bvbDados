@@ -49,7 +49,7 @@
                                      <td contenteditable='true' onblur='updateItem("${snapshot.key}", "${categoria}", "quantidade", this.textContent)'>${data.quantidade}</td>
                                      <td><input type='checkbox' ${data.verificado ? 'checked' : ''} onclick='updateItem("${snapshot.key}", "${categoria}", "verificado", this.checked)'></td>
                                      <td><input type='checkbox' ${data.repor ? 'checked' : ''} onclick='updateItem("${snapshot.key}", "${categoria}", "repor", this.checked)'></td>
-                                     ${isAdmin ? "<td><button class='btn-remover' onclick='removeItem(\"" + snapshot.key + "\", \"" + categoria + "\")'>Remover</button></td>" : ""}`;
+                                     ${isAdmin ? `<td><button class='btn-remover' onclick='confirmarRemocao("${snapshot.key}", "${categoria}")'>Remover</button></td>` : ""}`;
                     tbody.appendChild(row);
                 });
             });
@@ -80,13 +80,19 @@
             }
         }
 
+        function confirmarRemocao(id, categoria) {
+            if (confirm('Deseja realmente remover este item?')) {
+                removeItem(id, categoria);
+            }
+        }
+
         function removeItem(id, categoria) {
             const itemRef = database.ref(`${categoria}/${id}`);
             itemRef.remove()
                 .then(() => {
                     const row = document.querySelector(`tr[data-id="${id}"]`);
                     if (row) row.remove();
-                    showPopup('Item removido com sucesso!!', 'success');
+                    showPopup('Item removido com sucesso!', 'success');
                 })
                 .catch((error) => {
                     showPopup('Erro ao remover item.', 'error');
