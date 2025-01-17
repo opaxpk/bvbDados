@@ -402,21 +402,42 @@
                 });
         }
 
-        // Função para rederecionar para o index
+        // Função para fechar o painel de administração sem recarregar a página
         function fecharPainelAdmin() {
-            window.location.href = window.location.pathname;
+            document.getElementById('adminActions').style.display = 'none';
+            document.querySelectorAll('.acoes').forEach(coluna => coluna.style.display = 'none');
         }
 
         window.onload = function() {
-            const urlParams = new URLSearchParams(window.location.search);
-            if (urlParams.get('admin') === 'true') {
-                document.getElementById('adminActions').style.display = 'flex';
-                document.getElementById('btnFechar').style.display = 'inline-block';
-            } else {
-                document.getElementById('adminActions').style.display = 'none';
-                document.getElementById('btnFechar').style.display = 'none';
-            }
-        }
+    const isAdmin = window.location.search.includes('admin=true');
+    
+    // Mostrar ou esconder colunas de ações e admin actions
+    if (isAdmin) {
+        document.querySelectorAll('.acoes').forEach(coluna => coluna.style.display = 'table-cell');
+        document.querySelector('.admin-actions').style.display = 'block';
+    } else {
+        document.querySelectorAll('.acoes').forEach(coluna => coluna.style.display = 'none');
+    }
+
+    // Carregar os dados do Firebase e adicionar à tabela
+    const categorias = ['cabine-conducao-body', 'saco-abordagem-body', 'saco-trauma-body', 'saco-pediatrico-body'];
+    categorias.forEach(categoria => {
+        const tbody = document.getElementById(categoria);
+        const ref = database.ref(categoria);
+        ref.on('child_added', (snapshot) => {
+            const data = snapshot.val();
+            const row = document.createElement('tr');
+            row.setAttribute('data-id', snapshot.key); // Atribuir um ID único para cada linha
+            row.innerHTML = `<td contenteditable='true' onfocus='selecionarCelula(this)' onblur='updateName("${snapshot.key}", "${categoria}", this.textContent)'>${data.nome}</td>
+                             <td contenteditable='true' onblur='updateItem("${snapshot.key}", "${categoria}", "quantidade", this.textContent)'>${data.quantidade}</td>
+                             <td><input type='checkbox' ${data.verificado ? 'checked' : ''} onclick='updateItem("${snapshot.key}", "${categoria}", "verificado", this.checked)'></td>
+                             <td><input type='checkbox' ${data.repor ? 'checked' : ''} onclick='updateItem("${snapshot.key}", "${categoria}", "repor", this.checked)'></td>
+                             ${isAdmin ? "<td><button class='btn-remover' onclick='removeItem(\"" + snapshot.key + "\", \"" + categoria + "\")'>Remover</button></td>" : ""}`;
+            tbody.appendChild(row);
+        });
+    });
+};
+
     </script>
 </body>
 </html>
