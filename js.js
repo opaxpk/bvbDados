@@ -1,4 +1,4 @@
-// Configuração do Firebase
+        // Configuração do Firebase
         var firebaseConfig = {
             apiKey: "AIzaSyCONI5jggdZmpWU6XyExDUILRwb6PZ3ww8",
             authDomain: "bvbdados.firebaseapp.com",
@@ -15,26 +15,20 @@
         var database = firebase.database();
 
         function irParaBackend() {
-    // Obtém a URL atual
-    const urlAtual = window.location.href;
+            const urlAtual = window.location.href;
+            if (!urlAtual.endsWith('/backend')) {
+                const novaURL = urlAtual.endsWith('/') ? urlAtual + 'backend' : urlAtual + '/backend';
+                window.location.href = novaURL;
+            }
+        }
 
-    // Verifica se a URL já termina com "/backend" para evitar duplicação
-    if (!urlAtual.endsWith('/backend')) {
-        // Adiciona "/backend" ao final da URL
-        const novaURL = urlAtual.endsWith('/') ? urlAtual + 'backend' : urlAtual + '/backend';
-        window.location.href = novaURL; // Redireciona para a nova URL
-    }
-}
-
-        // Função para fechar o painel de administração
         function fecharPainelAdmin() {
             const urlSemAdmin = window.location.href.split('?')[0];
             window.location.href = urlSemAdmin;
         }
 
-        window.onload = function() {
+        window.onload = function () {
             const isAdmin = window.location.search.includes('admin=true');
-            
             if (isAdmin) {
                 document.querySelectorAll('.acoes').forEach(coluna => coluna.style.display = 'table-cell');
                 document.getElementById('adminActions').style.display = 'flex';
@@ -43,7 +37,6 @@
                 document.getElementById('adminActions').style.display = 'none';
             }
 
-            // Carregar os dados do Firebase e adicionar à tabela
             const categorias = ['cabine-conducao-body', 'saco-abordagem-body', 'saco-trauma-body', 'saco-pediatrico-body'];
             categorias.forEach(categoria => {
                 const tbody = document.getElementById(categoria);
@@ -62,7 +55,6 @@
             });
         };
 
-        // Função para adicionar item no Firebase
         function addItem() {
             const categoria = document.getElementById('categoria').value;
             const itemName = document.getElementById('itemName').value;
@@ -76,59 +68,63 @@
                     verificado: false,
                     repor: false
                 }).then(() => {
-                    showPopup('Item adicionado com sucesso!', 'green');
+                    showPopup('Item adicionado com sucesso!', 'success');
                 }).catch(error => {
-                    showPopup('Erro ao adicionar item.', 'red');
+                    showPopup('Erro ao adicionar item.', 'error');
                     console.error('Erro ao adicionar item: ', error);
                 });
                 document.getElementById('itemName').value = '';
                 document.getElementById('itemQuantity').value = '';
             } else {
-                showPopup('Por favor, preencha todos os campos.', 'yellow');
-                console.log('Por favor, preencha todos os campos');
+                showPopup('Por favor, preencha todos os campos.', 'warning');
             }
+        }
+
+        function removeItem(id, categoria) {
+            const itemRef = database.ref(`${categoria}/${id}`);
+            itemRef.remove()
+                .then(() => {
+                    const row = document.querySelector(`tr[data-id="${id}"]`);
+                    if (row) row.remove();
+                    showPopup('Item removido com sucesso!', 'success');
+                })
+                .catch((error) => {
+                    showPopup('Erro ao remover item.', 'error');
+                    console.error('Erro ao remover item do Firebase: ', error);
+                });
         }
 
         function showPopup(message, type) {
             const popup = document.createElement('div');
-            popup.classList.add('popup');
+            popup.classList.add('popup', type);
+            popup.textContent = message;
 
-            // Adiciona a classe de tipo (success, error, warning)
-            if (type === 'green') {
-                popup.classList.add('success');
-            } else if (type === 'red') {
-                popup.classList.add('error');
-            } else if (type === 'yellow') {
-                popup.classList.add('warning');
-            }
+            Object.assign(popup.style, {
+                position: 'fixed',
+                top: '20px',
+                right: '20px',
+                padding: '15px 20px',
+                borderRadius: '8px',
+                color: '#fff',
+                fontSize: '16px',
+                boxShadow: '0 2px 10px rgba(0,0,0,0.2)',
+                zIndex: '1000',
+                opacity: '0',
+                transition: 'opacity 0.5s ease'
+            });
 
-            // Ícone opcional (pode usar FontAwesome ou outro)
-            const icon = document.createElement('span');
-            if (type === 'green') {
-                icon.innerHTML = '✔️'; // Ícone de sucesso
-            } else if (type === 'red') {
-                icon.innerHTML = '❌'; // Ícone de erro
-            } else if (type === 'yellow') {
-                icon.innerHTML = '⚠️'; // Ícone de aviso
-            }
-            popup.appendChild(icon);
+            if (type === 'success') popup.style.backgroundColor = '#4CAF50';
+            if (type === 'error') popup.style.backgroundColor = '#F44336';
+            if (type === 'warning') popup.style.backgroundColor = '#FFC107';
 
-            // Mensagem
-            const text = document.createElement('span');
-            text.textContent = message;
-            popup.appendChild(text);
-
-            // Adiciona o pop-up ao corpo
             document.body.appendChild(popup);
-
-            // Remove o pop-up após 3 segundos
+            setTimeout(() => popup.style.opacity = '1', 100);
             setTimeout(() => {
-                popup.style.animation = 'fadeOut 0.3s ease-in-out forwards';
-                setTimeout(() => {
-                    popup.remove();
-                }, 300);
+                popup.style.opacity = '0';
+                setTimeout(() => popup.remove(), 500);
             }, 3000);
         }
+
 
         let celulaSelecionada = null;
 
