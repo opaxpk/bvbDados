@@ -85,6 +85,7 @@
                 document.getElementById('itemQuantity').value = '';
             } else {
                 showPopup('Por favor, preencha todos os campos.', 'green');
+                console.log('Por favor, preencha todos os campos');
             }
         }
 
