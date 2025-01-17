@@ -265,9 +265,10 @@
         var database = firebase.database();
 
         window.onload = function() {
+            // Verifica se a URL contém ?admin=true
             const isAdmin = window.location.search.includes('admin=true');
             
-            // Mostrar ou esconder colunas de ações e admin actions
+            // Mostrar ou esconder painel de administração
             if (isAdmin) {
                 document.querySelectorAll('.acoes').forEach(coluna => coluna.style.display = 'table-cell');
                 document.querySelector('.admin-actions').style.display = 'block';
