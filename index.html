@@ -81,6 +81,31 @@
             display: none;
             margin-top: 20px;
             margin-bottom: 20px;
+            padding: 20px;
+            background-color: #ffffff;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .admin-actions input[type="text"],
+        .admin-actions input[type="number"],
+        .admin-actions select {
+            border: none;
+            border-bottom: 2px solid #ccc;
+            padding: 8px 5px;
+            font-size: 14px;
+            width: 200px;
+            transition: border-color 0.3s;
+        }
+
+        .admin-actions input[type="text"]:focus,
+        .admin-actions input[type="number"]:focus,
+        .admin-actions select:focus {
+            border-bottom-color: #007BFF;
+            outline: none;
         }
 
         /* Estilos para dispositivos móveis */
@@ -111,7 +136,32 @@
             }
         }
 
-        .btn-add{
+
+        .btn-add, .btn-lacre, .btn-reposicao, .btn-pediatra {
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            cursor: pointer;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+        }
+
+        .btn-add:hover, .btn-lacre:hover, .btn-reposicao:hover, .btn-pediatra:hover {
+            background-color: #0056b3;
+        }
+
+        .btn-lacre {
+            background-color: #FF9800;
+        }
+        .btn-reposicao {
+            background-color: #FF5722;
+        }
+        .btn-pediatra {
+            background-color: #8BC34A;
+        }
+
+        /*.btn-add{
             background-color: green;
             color: white;
             border: none;
@@ -136,6 +186,8 @@
         .btn-lacre:hover, .btn-reposicao:hover, .btn-pediatra:hover {
             background-color: darkorange;
         }
+
+        */
 
         .btn-quantidade {
             background-color: #4CAF50;
