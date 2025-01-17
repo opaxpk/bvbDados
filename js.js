@@ -146,6 +146,7 @@
                 // Verificar se a etiqueta já não foi adicionada
                 if (!nomeItem.includes(etiqueta)) {
                     celulaSelecionada.textContent += etiqueta;
+                    showPopup('Etiqueta adicionada com sucesso!', 'success');
                 }
             }
         }
