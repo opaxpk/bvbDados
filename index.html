@@ -1,3 +1,4 @@
+Work
 <!DOCTYPE html>
 <html lang="pt">
 <head>
@@ -7,7 +8,6 @@
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
     <style>
-        
         body {
             display: flex;
             flex-direction: column;
@@ -81,7 +81,7 @@
         .admin-actions {
             display: none;
             margin-top: 20px;
-            animation: fadeIn 0.5s ease-out;
+            margin-bottom: 20px;
         }
 
         /* Estilos para dispositivos móveis */
@@ -138,47 +138,19 @@
             background-color: darkorange;
         }
 
-
-        .admin-actions {
-            display: none;
-            margin-top: 20px;
-            animation: fadeIn 0.5s ease-out;
-        }
-
-        .admin-actions input, .admin-actions select {
-            padding: 10px;
-            margin-bottom: 10px;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-            width: 100%;
-        }
-
-        .admin-actions button {
+        .btn-quantidade {
             background-color: #4CAF50;
             color: white;
-            padding: 10px 15px;
             border: none;
+            padding: 5px 10px;
             cursor: pointer;
             border-radius: 5px;
-            width: 100%;
+            margin: 2px;
         }
 
-        .admin-actions button:hover {
-            background-color: darkgreen;
+        .btn-quantidade:hover {
+            background-color: #45a049;
         }
-
-        /* Animação de fade-in */
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-            }
-            to {
-                opacity: 1;
-            }
-        }
-
-    
-
 
     </style>
 </head>
