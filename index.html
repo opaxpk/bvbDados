@@ -162,11 +162,28 @@
         .btn-fechar {
             background-color: #9E9E9E;
         }
+
+        /* Estilo do botão Painel Admin */
+        .btn-painel-admin {
+            background-color: #28a745; /* Verde */
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            cursor: pointer;
+            border-radius: 5px;
+            font-size: 14px;
+            margin-left: 10px;
+            transition: background-color 0.3s;
+        }
+
+        .btn-painel-admin:hover {
+            background-color: #218838; /* Verde mais escuro ao passar o mouse */
+        }
     </style>
 </head>
 <body>
     <div class="conteudo">
-        <h1>Base de Dados</h1>
+        <h1>Base de Dados <button class="btn-painel-admin" onclick="irParaBackend()">Painel Admin</button></h1>
 
         <div class="admin-actions" id="adminActions">
             <select id="categoria">
@@ -181,7 +198,7 @@
             <button class="btn-lacre" onclick="adicionarEtiqueta('(Lacre)')">Lacre</button>
             <button class="btn-reposicao" onclick="adicionarEtiqueta('(*R)')">(*R)</button>
             <button class="btn-pediatra" onclick="adicionarEtiqueta('℗')">℗</button>
-            <button class="btn-fechar" onclick="fecharPainelAdmin()">Fechar Painel Admin</button> <!-- Botão novo -->
+            <button class="btn-fechar" onclick="fecharPainelAdmin()">Fechar Painel Admin</button>
         </div>
 
         <h2>Cabine de Condução</h2>
@@ -262,23 +279,33 @@
         firebase.initializeApp(firebaseConfig);
         var database = firebase.database();
 
+        function irParaBackend() {
+    // Obtém a URL atual
+    const urlAtual = window.location.href;
+
+    // Verifica se a URL já termina com "/backend" para evitar duplicação
+    if (!urlAtual.endsWith('/backend')) {
+        // Adiciona "/backend" ao final da URL
+        const novaURL = urlAtual.endsWith('/') ? urlAtual + 'backend' : urlAtual + '/backend';
+        window.location.href = novaURL; // Redireciona para a nova URL
+    }
+}
+
         // Função para fechar o painel de administração
         function fecharPainelAdmin() {
-            // Remove o parâmetro ?admin=true da URL
-            const urlSemAdmin = window.location.href.split('?')[0]; // Remove tudo após o ?
-            window.location.href = urlSemAdmin; // Redireciona para a URL sem ?admin=true
+            const urlSemAdmin = window.location.href.split('?')[0];
+            window.location.href = urlSemAdmin;
         }
 
         window.onload = function() {
             const isAdmin = window.location.search.includes('admin=true');
             
-            // Mostrar ou esconder colunas de ações e admin actions
             if (isAdmin) {
                 document.querySelectorAll('.acoes').forEach(coluna => coluna.style.display = 'table-cell');
-                document.getElementById('adminActions').style.display = 'flex'; // Mostrar a div admin-actions
+                document.getElementById('adminActions').style.display = 'flex';
             } else {
                 document.querySelectorAll('.acoes').forEach(coluna => coluna.style.display = 'none');
-                document.getElementById('adminActions').style.display = 'none'; // Esconder a div admin-actions
+                document.getElementById('adminActions').style.display = 'none';
             }
 
             // Carregar os dados do Firebase e adicionar à tabela
@@ -289,7 +316,7 @@
                 ref.on('child_added', (snapshot) => {
                     const data = snapshot.val();
                     const row = document.createElement('tr');
-                    row.setAttribute('data-id', snapshot.key); // Atribuir um ID único para cada linha
+                    row.setAttribute('data-id', snapshot.key);
                     row.innerHTML = `<td contenteditable='true' onfocus='selecionarCelula(this)' onblur='updateName("${snapshot.key}", "${categoria}", this.textContent)'>${data.nome}</td>
                                      <td contenteditable='true' onblur='updateItem("${snapshot.key}", "${categoria}", "quantidade", this.textContent)'>${data.quantidade}</td>
                                      <td><input type='checkbox' ${data.verificado ? 'checked' : ''} onclick='updateItem("${snapshot.key}", "${categoria}", "verificado", this.checked)'></td>
