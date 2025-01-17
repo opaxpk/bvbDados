@@ -178,19 +178,4 @@
                 });
         }
 
-        // Função para remover item do Firebase
-        function removeItem(id, categoria) {
-            const itemRef = database.ref(`${categoria}/${id}`);
-            itemRef.remove()
-                .then(() => {
-                    console.log('Item removido com sucesso do Firebase!');
-                    // Remover a linha da tabela
-                    const row = document.querySelector(`tr[data-id="${id}"]`);
-                    if (row) {
-                        row.remove();
-                    }
-                })
-                .catch((error) => {
-                    console.error('Erro ao remover item do Firebase: ', error);
-                });
-        }
+        
