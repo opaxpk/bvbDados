@@ -137,7 +137,7 @@
         }
 
 
-        .btn-add, .btn-lacre, .btn-reposicao, .btn-pediatra {
+        .btn-add, .btn-lacre, .btn-reposicao, .btn-pediatra, .btn-fechar {
             background-color: #007BFF;
             color: white;
             border: none;
@@ -147,7 +147,7 @@
             transition: background-color 0.3s;
         }
 
-        .btn-add:hover, .btn-lacre:hover, .btn-reposicao:hover, .btn-pediatra:hover {
+        .btn-add:hover, .btn-lacre:hover, .btn-reposicao:hover, .btn-pediatra:hover, .btn-fechar:hover {
             background-color: #0056b3;
         }
 
@@ -161,46 +161,8 @@
             background-color: #8BC34A;
         }
 
-        /*.btn-add{
-            background-color: green;
-            color: white;
-            border: none;
-            padding: 5px 10px;
-            cursor: pointer;
-            border-radius: 5px;
-        }
-
-        .btn-add:hover{
-            background-color: darkgreen;
-        }
-
-        .btn-lacre, .btn-reposicao, .btn-pediatra {
-            background-color: orange;
-            color: white;
-            border: none;
-            padding: 5px 10px;
-            cursor: pointer;
-            border-radius: 5px;
-        }
-
-        .btn-lacre:hover, .btn-reposicao:hover, .btn-pediatra:hover {
-            background-color: darkorange;
-        }
-
-        */
-
-        .btn-quantidade {
-            background-color: #4CAF50;
-            color: white;
-            border: none;
-            padding: 5px 10px;
-            cursor: pointer;
-            border-radius: 5px;
-            margin: 2px;
-        }
-
-        .btn-quantidade:hover {
-            background-color: #45a049;
+        .btn-fechar {
+            background-color: #9E9E9E;
         }
 
     </style>
@@ -222,6 +184,7 @@
             <button class="btn-lacre" onclick="adicionarEtiqueta('(Lacre)')">Lacre</button>
             <button class="btn-reposicao" onclick="adicionarEtiqueta('(*R)')">(*R)</button>
             <button class="btn-pediatra" onclick="adicionarEtiqueta('℗')">℗</button>
+            <button class="btn-fechar" onclick="fecharPainelAdmin()">Fechar Painel</button>
         </div>
 
         <h2>Cabine de Condução</h2>
