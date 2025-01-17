@@ -29,6 +29,24 @@
             gap: 10px;
         }
 
+        .admin-actions input[type="text"],
+        .admin-actions input[type="number"],
+        .admin-actions select {
+            border: none;
+            border-bottom: 2px solid #ccc;
+            padding: 8px 5px;
+            font-size: 14px;
+            width: 200px;
+            transition: border-color 0.3s;
+        }
+
+        .admin-actions input[type="text"]:focus,
+        .admin-actions input[type="number"]:focus,
+        .admin-actions select:focus {
+            border-bottom-color: #007BFF;
+            outline: none;
+        }
+
         /* Estilos para a legenda */
         .legenda {
             width: 100%;
@@ -88,37 +106,6 @@
 
         .btn-remover:hover {
             background-color: darkred;
-        }
-
-        .admin-actions {
-            display: none;
-            margin-top: 20px;
-            margin-bottom: 20px;
-            padding: 20px;
-            background-color: #ffffff;
-            border-radius: 8px;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-            display: flex;
-            flex-wrap: wrap;
-            gap: 10px;
-        }
-
-        .admin-actions input[type="text"],
-        .admin-actions input[type="number"],
-        .admin-actions select {
-            border: none;
-            border-bottom: 2px solid #ccc;
-            padding: 8px 5px;
-            font-size: 14px;
-            width: 200px;
-            transition: border-color 0.3s;
-        }
-
-        .admin-actions input[type="text"]:focus,
-        .admin-actions input[type="number"]:focus,
-        .admin-actions select:focus {
-            border-bottom-color: #007BFF;
-            outline: none;
         }
 
         /* Estilos para dispositivos móveis */
@@ -196,7 +183,6 @@
             <button class="btn-lacre" onclick="adicionarEtiqueta('(Lacre)')">Lacre</button>
             <button class="btn-reposicao" onclick="adicionarEtiqueta('(*R)')">(*R)</button>
             <button class="btn-pediatra" onclick="adicionarEtiqueta('℗')">℗</button>
-            <button class="btn-fechar" onclick="fecharPainel()">Fechar Painel</button>
         </div>
 
         <h2>Cabine de Condução</h2>
@@ -414,13 +400,7 @@
                 });
         }
 
-        // Função para fechar o painel e redirecionar
-function fecharPainel() {
-    // Remover o parâmetro 'admin=true' da URL
-    const url = new URL(window.location.href);
-    url.searchParams.delete('admin');
-    window.location.href = url.toString();
-}
+
     </script>
 </body>
 </html>
