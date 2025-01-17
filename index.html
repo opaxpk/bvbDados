@@ -162,7 +162,6 @@
         .btn-fechar {
             background-color: #9E9E9E;
         }
-
     </style>
 </head>
 <body>
@@ -182,6 +181,7 @@
             <button class="btn-lacre" onclick="adicionarEtiqueta('(Lacre)')">Lacre</button>
             <button class="btn-reposicao" onclick="adicionarEtiqueta('(*R)')">(*R)</button>
             <button class="btn-pediatra" onclick="adicionarEtiqueta('℗')">℗</button>
+            <button class="btn-fechar" onclick="fecharPainelAdmin()">Fechar Painel Admin</button> <!-- Botão novo -->
         </div>
 
         <h2>Cabine de Condução</h2>
@@ -197,7 +197,7 @@
             </thead>
             <tbody id="cabine-conducao-body"></tbody>
         </table>
-        <h2>CÉLULA SANITÁRIA</h2>
+
         <h2>Saco de Abordagem à Vítima</h2>
         <table class="azul">
             <thead>
@@ -261,6 +261,13 @@
         // Inicializa o Firebase
         firebase.initializeApp(firebaseConfig);
         var database = firebase.database();
+
+        // Função para fechar o painel de administração
+        function fecharPainelAdmin() {
+            // Remove o parâmetro ?admin=true da URL
+            const urlSemAdmin = window.location.href.split('?')[0]; // Remove tudo após o ?
+            window.location.href = urlSemAdmin; // Redireciona para a URL sem ?admin=true
+        }
 
         window.onload = function() {
             const isAdmin = window.location.search.includes('admin=true');
