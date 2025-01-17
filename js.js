@@ -68,7 +68,7 @@
                     verificado: false,
                     repor: false
                 }).then(() => {
-                    showPopup('Item adicionado com sucesso!', 'success');
+                    showPopup('Item adicionado com sucesso!!', 'success');
                 }).catch(error => {
                     showPopup('Erro ao adicionar item.', 'error');
                     console.error('Erro ao adicionar item: ', error);
@@ -76,7 +76,7 @@
                 document.getElementById('itemName').value = '';
                 document.getElementById('itemQuantity').value = '';
             } else {
-                showPopup('Por favor, preencha todos os campos.', 'warning');
+                showPopup('Por favor, preencha todos os campos!', 'warning');
             }
         }
 
@@ -86,7 +86,7 @@
                 .then(() => {
                     const row = document.querySelector(`tr[data-id="${id}"]`);
                     if (row) row.remove();
-                    showPopup('Item removido com sucesso!', 'success');
+                    showPopup('Item removido com sucesso!!', 'success');
                 })
                 .catch((error) => {
                     showPopup('Erro ao remover item.', 'error');
