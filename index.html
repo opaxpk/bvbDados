@@ -1,3 +1,4 @@
+Work
 <!DOCTYPE html>
 <html lang="pt">
 <head>
@@ -81,31 +82,6 @@
             display: none;
             margin-top: 20px;
             margin-bottom: 20px;
-            padding: 20px;
-            background-color: #ffffff;
-            border-radius: 8px;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-            display: flex;
-            flex-wrap: wrap;
-            gap: 10px;
-        }
-
-        .admin-actions input[type="text"],
-        .admin-actions input[type="number"],
-        .admin-actions select {
-            border: none;
-            border-bottom: 2px solid #ccc;
-            padding: 8px 5px;
-            font-size: 14px;
-            width: 200px;
-            transition: border-color 0.3s;
-        }
-
-        .admin-actions input[type="text"]:focus,
-        .admin-actions input[type="number"]:focus,
-        .admin-actions select:focus {
-            border-bottom-color: #007BFF;
-            outline: none;
         }
 
         /* Estilos para dispositivos móveis */
@@ -136,32 +112,44 @@
             }
         }
 
-        .btn-add, .btn-lacre, .btn-reposicao, .btn-pediatra, .btn-fechar {
-            background-color: #007BFF;
+        .btn-add{
+            background-color: green;
             color: white;
             border: none;
-            padding: 8px 15px;
+            padding: 5px 10px;
             cursor: pointer;
             border-radius: 5px;
-            transition: background-color 0.3s;
         }
 
-        .btn-add:hover, .btn-lacre:hover, .btn-reposicao:hover, .btn-pediatra:hover, .btn-fechar:hover {
-            background-color: #0056b3;
+        .btn-add:hover{
+            background-color: darkgreen;
         }
 
-        .btn-lacre {
-            background-color: #FF9800;
-        }
-        .btn-reposicao {
-            background-color: #FF5722;
-        }
-        .btn-pediatra {
-            background-color: #8BC34A;
+        .btn-lacre, .btn-reposicao, .btn-pediatra {
+            background-color: orange;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            cursor: pointer;
+            border-radius: 5px;
         }
 
-        .btn-fechar {
-            background-color: #9E9E9E;
+        .btn-lacre:hover, .btn-reposicao:hover, .btn-pediatra:hover {
+            background-color: darkorange;
+        }
+
+        .btn-quantidade {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            cursor: pointer;
+            border-radius: 5px;
+            margin: 2px;
+        }
+
+        .btn-quantidade:hover {
+            background-color: #45a049;
         }
 
     </style>
@@ -170,7 +158,7 @@
     <div class="conteudo">
         <h1>Base de Dados</h1>
 
-        <div class="admin-actions" id="adminActions">
+        <div class="admin-actions">
             <select id="categoria">
                 <option value="cabine-conducao-body">Cabine de Condução</option>
                 <option value="saco-abordagem-body">Saco de Abordagem à Vítima</option>
@@ -183,7 +171,6 @@
             <button class="btn-lacre" onclick="adicionarEtiqueta('(Lacre)')">Lacre</button>
             <button class="btn-reposicao" onclick="adicionarEtiqueta('(*R)')">(*R)</button>
             <button class="btn-pediatra" onclick="adicionarEtiqueta('℗')">℗</button>
-            <button class="btn-fechar" onclick="fecharPainelAdmin()">Fechar Painel</button>
         </div>
 
         <h2>Cabine de Condução</h2>
@@ -265,10 +252,9 @@
         var database = firebase.database();
 
         window.onload = function() {
-            // Verifica se a URL contém ?admin=true
             const isAdmin = window.location.search.includes('admin=true');
             
-            // Mostrar ou esconder painel de administração
+            // Mostrar ou esconder colunas de ações e admin actions
             if (isAdmin) {
                 document.querySelectorAll('.acoes').forEach(coluna => coluna.style.display = 'table-cell');
                 document.querySelector('.admin-actions').style.display = 'block';
@@ -302,32 +288,105 @@
             const itemQuantity = document.getElementById('itemQuantity').value;
 
             if (itemName && itemQuantity) {
-                const ref = database.ref(categoria);
-                const newItem = {
+                const newItemRef = database.ref(categoria).push();
+                newItemRef.set({
                     nome: itemName,
                     quantidade: itemQuantity,
                     verificado: false,
                     repor: false
-                };
-                ref.push(newItem);
+                }).then(() => {
+                    showPopup('Item adicionado com sucesso!', 'green');
+                }).catch(error => {
+                    showPopup('Erro ao adicionar item.', 'red');
+                    console.error('Erro ao adicionar item: ', error);
+                });
+                document.getElementById('itemName').value = '';
+                document.getElementById('itemQuantity').value = '';
+            } else {
+                showPopup('Por favor, preencha todos os campos.', 'yellow');
             }
         }
 
-        // Função para adicionar etiqueta ao nome do item
+        // Função para mostrar o popup de sucesso ou erro
+        function showPopup(message, color) {
+            const popup = document.createElement('div');
+            popup.textContent = message;
+            popup.style.backgroundColor = color;
+            popup.style.color = 'black';
+            popup.style.padding = '10px';
+            popup.style.textAlign = 'center';
+            popup.style.position = 'fixed';
+            popup.style.top = '10px';
+            popup.style.width = '100%';
+            popup.style.zIndex = '1000';
+            document.body.appendChild(popup);
+            setTimeout(() => {
+                popup.remove();
+            }, 3000);
+        }
+
+        let celulaSelecionada = null;
+
+        // Função para selecionar a célula
+        function selecionarCelula(celula) {
+            celulaSelecionada = celula;
+        }
+
+        // Função para adicionar etiqueta ao nome do item selecionado
         function adicionarEtiqueta(etiqueta) {
-            const selectedRow = document.querySelector('tr.selected');
-            if (selectedRow) {
-                const nameCell = selectedRow.querySelector('td');
-                nameCell.textContent = `${nameCell.textContent} ${etiqueta}`;
+            if (celulaSelecionada) {
+                const nomeItem = celulaSelecionada.textContent;
+                // Verificar se a etiqueta já não foi adicionada
+                if (!nomeItem.includes(etiqueta)) {
+                    celulaSelecionada.textContent += etiqueta;
+                }
             }
         }
 
-        // Função para fechar o painel admin
-        function fecharPainelAdmin() {
-            document.querySelector('.admin-actions').style.display = 'none';
+        // Função para atualizar o nome no Firebase
+        function updateName(id, categoria, novoNome) {
+            if (novoNome.trim() !== "") {
+                const itemRef = database.ref(`${categoria}/${id}`);
+                itemRef.update({ nome: novoNome })
+                    .then(() => {
+                        console.log('Nome atualizado com sucesso!');
+                    })
+                    .catch((error) => {
+                        console.error('Erro ao atualizar nome: ', error);
+                    });
+            }
         }
 
-        // Funções auxiliares para editar dados no Firebase, marcar verificado e etc...
+        // Função para atualizar outros campos
+        function updateItem(id, categoria, campo, valor) {
+            const itemRef = database.ref(`${categoria}/${id}`);
+            const updates = {};
+            updates[campo] = valor;
+            itemRef.update(updates)
+                .then(() => {
+                    console.log(`${campo} atualizado com sucesso!`);
+                })
+                .catch((error) => {
+                    console.error(`Erro ao atualizar ${campo}: `, error);
+                });
+        }
+
+        // Função para remover item do Firebase
+        function removeItem(id, categoria) {
+            const itemRef = database.ref(`${categoria}/${id}`);
+            itemRef.remove()
+                .then(() => {
+                    console.log('Item removido com sucesso do Firebase!');
+                    // Remover a linha da tabela
+                    const row = document.querySelector(`tr[data-id="${id}"]`);
+                    if (row) {
+                        row.remove();
+                    }
+                })
+                .catch((error) => {
+                    console.error('Erro ao remover item do Firebase: ', error);
+                });
+        }
     </script>
 </body>
 </html>
