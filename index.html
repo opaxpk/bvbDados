@@ -171,7 +171,7 @@
     <div class="conteudo">
         <h1>Base de Dados</h1>
 
-        <div class="admin-actions">
+        <div class="admin-actions" id="adminActions">
             <select id="categoria">
                 <option value="cabine-conducao-body">Cabine de Condução</option>
                 <option value="saco-abordagem-body">Saco de Abordagem à Vítima</option>
@@ -405,6 +405,17 @@
         // Função para rederecionar para o index
         function fecharPainelAdmin() {
             window.location.href = window.location.pathname;
+        }
+
+        window.onload = function() {
+            const urlParams = new URLSearchParams(window.location.search);
+            if (urlParams.get('admin') === 'true') {
+                document.getElementById('adminActions').style.display = 'flex';
+                document.getElementById('btnFechar').style.display = 'inline-block';
+            } else {
+                document.getElementById('adminActions').style.display = 'none';
+                document.getElementById('btnFechar').style.display = 'none';
+            }
         }
     </script>
 </body>
