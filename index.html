@@ -17,6 +17,65 @@
             background-color: #f4f4f9;
         }
 
+        /* Estilo do Pop-up Moderno */
+        .popup {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: #ffffff;
+            color: #333;
+            padding: 15px 25px;
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            font-size: 14px;
+            font-weight: 500;
+            z-index: 1000;
+            opacity: 0;
+            animation: fadeIn 0.3s ease-in-out forwards;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .popup.success {
+            background-color: #e8f5e9;
+            color: #2e7d32;
+            border-left: 4px solid #2e7d32;
+        }
+
+        .popup.error {
+            background-color: #ffebee;
+            color: #c62828;
+            border-left: 4px solid #c62828;
+        }
+
+        .popup.warning {
+            background-color: #fff3e0;
+            color: #f57c00;
+            border-left: 4px solid #f57c00;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                top: 10px;
+            }
+            to {
+                opacity: 1;
+                top: 20px;
+            }
+        }
+
+        @keyframes fadeOut {
+            from {
+                opacity: 1;
+            }
+            to {
+                opacity: 0;
+            }
+        }
+
         .admin-actions {
             margin-top: 20px;
             margin-bottom: 20px;

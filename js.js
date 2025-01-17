@@ -88,21 +88,44 @@
             }
         }
 
-        // Função para mostrar o popup de sucesso ou erro
-        function showPopup(message, color) {
+        function showPopup(message, type) {
             const popup = document.createElement('div');
-            popup.textContent = message;
-            popup.style.backgroundColor = color;
-            popup.style.color = 'black';
-            popup.style.padding = '10px';
-            popup.style.textAlign = 'center';
-            popup.style.position = 'fixed';
-            popup.style.top = '10px';
-            popup.style.width = '100%';
-            popup.style.zIndex = '1000';
+            popup.classList.add('popup');
+
+            // Adiciona a classe de tipo (success, error, warning)
+            if (type === 'green') {
+                popup.classList.add('success');
+            } else if (type === 'red') {
+                popup.classList.add('error');
+            } else if (type === 'yellow') {
+                popup.classList.add('warning');
+            }
+
+            // Ícone opcional (pode usar FontAwesome ou outro)
+            const icon = document.createElement('span');
+            if (type === 'green') {
+                icon.innerHTML = '✔️'; // Ícone de sucesso
+            } else if (type === 'red') {
+                icon.innerHTML = '❌'; // Ícone de erro
+            } else if (type === 'yellow') {
+                icon.innerHTML = '⚠️'; // Ícone de aviso
+            }
+            popup.appendChild(icon);
+
+            // Mensagem
+            const text = document.createElement('span');
+            text.textContent = message;
+            popup.appendChild(text);
+
+            // Adiciona o pop-up ao corpo
             document.body.appendChild(popup);
+
+            // Remove o pop-up após 3 segundos
             setTimeout(() => {
-                popup.remove();
+                popup.style.animation = 'fadeOut 0.3s ease-in-out forwards';
+                setTimeout(() => {
+                    popup.remove();
+                }, 300);
             }, 3000);
         }
 
